@@ -64,7 +64,7 @@
       pointer-events: auto; /* Enable mouse interactions */
     }
 
-    /* Radial blur orbs reacting to scroll */
+    /* Radial blur ambient orbs reacting to scroll */
     .orb {
       position: absolute;
       border-radius: 50%;
@@ -102,7 +102,7 @@
       transform: translateY(calc(var(--scroll) * -0.08px));
     }
 
-    /* Navigation - Restored left brand logo text as "YuvaSukuna" (no spans/colors) */
+    /* Navigation */
     header {
       position: fixed;
       top: 0;
@@ -792,6 +792,230 @@
       will-change: filter, opacity;
     }
 
+    /* ----------------------------------------------------
+    /* COMPREHENSIVE HIGH-END MOBILE RESPONSIVE MEDIA QUERIES
+    /* ---------------------------------------------------- */
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 16px;
+      }
+
+      header {
+        padding: 12px 16px;
+      }
+      
+      nav a {
+        margin-left: 14px;
+        font-size: 11px;
+        letter-spacing: 0.1px;
+      }
+      
+      section {
+        padding: 72px 0;
+        min-height: auto; /* Allow sections to shrink to natural content heights on mobile */
+      }
+      
+      .brand-title {
+        font-size: clamp(32px, 10vw, 48px); /* Scale down the giant brand title for mobile */
+        letter-spacing: -1.5px;
+        margin-bottom: 12px;
+      }
+      
+      .headline {
+        font-size: clamp(18px, 5vw, 24px);
+        line-height: 1.25;
+        margin-bottom: 12px;
+      }
+      
+      .subline {
+        font-size: 13.5px;
+        margin-bottom: 24px;
+        line-height: 1.5;
+      }
+      
+      .glass-shapes-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        width: 100%;
+        margin-top: 12px;
+      }
+
+      .glass-shape {
+        padding: 8px 14px;
+        font-size: 11px;
+        border-radius: 12px;
+      }
+      
+      .stats-container {
+        grid-template-columns: repeat(3, 1fr); /* Horizontal stats on mobile */
+        gap: 8px;
+        margin-top: 32px;
+        padding-top: 24px;
+        max-width: 100%;
+        width: 100%;
+      }
+      
+      .stat-item {
+        padding: 0 4px;
+      }
+
+      .stat-val {
+        font-size: 20px;
+        margin-bottom: 4px;
+      }
+      
+      .stat-lbl {
+        font-size: 8px;
+        letter-spacing: 0.5px;
+        line-height: 1.2;
+      }
+      
+      .project-card {
+        padding: 20px;
+        gap: 20px;
+        border-radius: 16px;
+      }
+      
+      .project-title {
+        font-size: 20px;
+      }
+
+      .video-wrapper {
+        border-radius: 12px;
+      }
+
+      .testimonial-card {
+        padding: 16px;
+        border-radius: 0 12px 12px 0;
+        margin-top: 8px;
+      }
+
+      .testimonial-text {
+        font-size: 12.5px;
+        line-height: 1.5;
+      }
+
+      .testimonial-author {
+        font-size: 11px;
+      }
+      
+      .work-grid {
+        grid-template-columns: 1fr; /* Force 1 column for other demos on mobile */
+        gap: 24px;
+      }
+      
+      .grid-project-card {
+        border-radius: 14px;
+      }
+      
+      .project-info-box {
+        padding: 16px;
+      }
+      
+      .project-info-box h3 {
+        font-size: 16px;
+      }
+
+      .project-info-box p {
+        font-size: 12px;
+        line-height: 1.5;
+        margin-bottom: 12px;
+      }
+
+      .about-paragraph {
+        font-size: 15px;
+        line-height: 1.7;
+      }
+      
+      .info-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      
+      .service-card {
+        padding: 16px;
+        border-radius: 12px;
+      }
+      
+      .cta-container {
+        padding: 36px 16px;
+        border-radius: 20px;
+      }
+      
+      .contact-headline {
+        font-size: clamp(22px, 6vw, 28px);
+        letter-spacing: -1px;
+      }
+      
+      .contact-subline {
+        font-size: 13px;
+        margin-bottom: 20px;
+        line-height: 1.5;
+      }
+
+      .availability-badge {
+        margin-bottom: 20px;
+        padding: 6px 12px;
+        font-size: 11px;
+      }
+      
+      .contact-buttons {
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .pill-btn {
+        padding: 10px 20px;
+        font-size: 12.5px;
+        flex: 1;
+        max-width: 160px;
+        text-align: center;
+      }
+      
+      /* Make sure background frosted ornaments scale down and don't overflow */
+      .backdrop-shape.shape-1 { width: 120px; height: 70px; }
+      .backdrop-shape.shape-2 { width: 100px; height: 100px; }
+      .backdrop-shape.shape-3 { width: 80px; height: 50px; }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        justify-content: center; /* Center-align header nav on very tiny screens */
+        padding: 10px 12px;
+      }
+      
+      .brand-nav {
+        display: none; /* Hide top-left text brand on mobile to save nav space */
+      }
+      
+      nav a {
+        margin: 0 8px;
+        font-size: 10px;
+      }
+      
+      .glass-shapes-row {
+        gap: 8px;
+      }
+      
+      .glass-shape {
+        padding: 8px 12px;
+        font-size: 10px;
+      }
+      
+      .contact-buttons {
+        gap: 8px;
+      }
+
+      .pill-btn {
+        padding: 10px 14px;
+        font-size: 12px;
+      }
+    }
+
     /* Footer */
     footer {
       padding: 48px 0;
@@ -812,7 +1036,7 @@
     <canvas id="c"></canvas>
   </div>
 
-  <!-- Navigation header with restored clean brand logo "YuvaSukuna" (pure white text) -->
+  <!-- Navigation header -->
   <header>
     <a href="#hero" class="brand-nav">YuvaSukuna</a>
     <nav>
@@ -828,7 +1052,7 @@
     <!-- Hero Section -->
     <section id="hero">
       <div class="hero-center">
-        <!-- Big Brand Title remains strictly centered here -->
+        <!-- Big Brand Title strictly centered -->
         <div class="brand-title"><span>YuvaSukuna</span></div>
         <h1 class="headline">I create demos that sell.</h1>
         <p class="subline">Motion design for SaaS founders who want their product to speak for itself.</p>
@@ -1118,7 +1342,17 @@
       H = canvas.height = wrap.offsetHeight;
     }
     resize();
-    window.addEventListener('resize', resize);
+    
+    // Width-only responsive resize listener (fixes mobile browser resize glitches on scroll)
+    let lastW = window.innerWidth;
+    window.addEventListener('resize', () => {
+      if (window.innerWidth !== lastW) {
+        lastW = window.innerWidth;
+        resize();
+        // Update mouse interaction radius dynamically based on layout sizing
+        mouse.radius = window.innerWidth < 768 ? 60 : 120;
+      }
+    });
 
     // Track scroll position & velocity
     window.addEventListener('scroll', () => {
@@ -1153,18 +1387,34 @@
       });
     });
 
-    // Track mouse position
-    const mouse = { x: null, y: null, radius: 120 };
-    window.addEventListener('mousemove', (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    });
-    window.addEventListener('mouseleave', () => {
+    // Track mouse & mobile touch positions
+    const mouse = { x: null, y: null, radius: window.innerWidth < 768 ? 60 : 120 };
+    
+    function setMousePos(e) {
+      if (e.touches && e.touches.length > 0) {
+        mouse.x = e.touches[0].clientX;
+        mouse.y = e.touches[0].clientY;
+      } else {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      }
+    }
+    
+    function clearMousePos() {
       mouse.x = null;
       mouse.y = null;
-    });
+    }
 
-    const PARTICLE_COUNT = 150;
+    window.addEventListener('mousemove', setMousePos);
+    window.addEventListener('mouseleave', clearMousePos);
+    
+    // Add touch support so tapping/sliding interact with background particles on mobile
+    window.addEventListener('touchstart', setMousePos, { passive: true });
+    window.addEventListener('touchmove', setMousePos, { passive: true });
+    window.addEventListener('touchend', clearMousePos);
+    window.addEventListener('touchcancel', clearMousePos);
+
+    const PARTICLE_COUNT = window.innerWidth < 768 ? 45 : 150;
     const particles = [];
     const shootingStars = [];
     const burstParticles = [];
@@ -1466,7 +1716,7 @@
       const dir = el.getAttribute('data-reveal-dir') || 'up';
       let startX = 0;
       let startY = 0;
-      const baseDistance = 140; 
+      const baseDistance = window.innerWidth < 768 ? 40 : 140; 
 
       if (dir === 'left') startX = -baseDistance;
       else if (dir === 'right') startX = baseDistance;
@@ -1504,11 +1754,12 @@
 
     // Separate state tracking for the Featured Project Card (Scale Pop & Parallax Zoom Out)
     const featuredCard = document.querySelector('.project-card');
+    const initialFeaturedScale = window.innerWidth < 768 ? 0.85 : 0.72;
     const featuredState = {
       element: featuredCard,
       revealed: false,
-      currentScale: 0.72,
-      targetScale: 0.72,
+      currentScale: initialFeaturedScale,
+      targetScale: initialFeaturedScale,
       currentOpacity: 0,
       targetOpacity: 0
     };
@@ -1528,7 +1779,7 @@
           if (!featuredState.revealed) {
             featuredState.revealed = true;
             featuredState.targetOpacity = 1;
-            featuredState.targetScale = 1.05; // POP slightly larger initially (scale pop effect)
+            featuredState.targetScale = 1.05; // POP slightly larger initially
           }
         }
 
@@ -1540,11 +1791,9 @@
           
           let targetScale = 1.0;
           if (progress > 0.45) {
-            // Shrinks gradually from 1.0 down to 0.88 as it moves out of viewport top (zoom-out parallax)
             const shrinkFactor = (progress - 0.45) * 0.22;
             targetScale = 1.05 - shrinkFactor;
           } else {
-            // Handle initial snappy settlement from scale-pop (1.05) back down to normal (1.0)
             if (featuredState.targetScale > 1.0) {
               featuredState.currentScale += (featuredState.targetScale - featuredState.currentScale) * fastLerp;
               if (Math.abs(featuredState.currentScale - featuredState.targetScale) < 0.005) {
