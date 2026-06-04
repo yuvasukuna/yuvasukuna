@@ -34,6 +34,11 @@
       scroll-behavior: smooth;
     }
 
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+    }
+
     body {
       background-color: var(--bg-dark);
       color: var(--text-main);
@@ -48,8 +53,8 @@
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       z-index: -1;
       background: radial-gradient(circle at 50% 50%, #080816 0%, #020205 100%);
       overflow: hidden;
@@ -1841,6 +1846,21 @@
     });
 
     window.addEventListener('load', () => {
+      // Force scroll restoration to manual and scroll back to top of the page on refresh
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      window.scrollTo(0, 0);
+      
+      // Clear URL anchor hashes to prevent browser jumps
+      if (window.location.hash) {
+        history.replaceState("", document.title, window.location.pathname + window.location.search);
+      }
+
+      // Re-cache offsets once the scroll position is safely reset to the top
+      cacheLayoutOffsets();
+      cacheSectionOffsets();
+
       const activeNav = document.querySelector('nav a.active');
       if (activeNav) {
         // Initialize position on page load
