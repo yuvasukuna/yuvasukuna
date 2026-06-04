@@ -808,8 +808,20 @@
       }
       
       section {
-        padding: 80px 0;
-        min-height: 100vh; /* Centered layout presentation on mobile */
+        padding: 60px 0;
+        min-height: auto; /* Shrink to natural content heights on mobile to remove empty gaps */
+      }
+
+      #hero {
+        min-height: calc(100vh - 40px); /* Center only the landing hero section */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-bottom: 20px;
+      }
+
+      #work {
+        padding-top: 20px; /* Pull Selected Work closer to hero */
       }
       
       .brand-title {
@@ -876,56 +888,107 @@
         line-height: 1.3;
       }
       
+      /* Side-by-side Layout for Featured Project Card */
       .project-card {
-        padding: 20px;
-        gap: 20px;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr; /* Video beside details horizontally */
+        gap: 16px;
+        padding: 16px;
         border-radius: 16px;
+        align-items: center;
+      }
+      
+      .project-card .project-meta {
+        display: contents; /* Promotes children to be direct grid items */
+      }
+
+      .project-card .video-wrapper {
+        grid-column: 1 / 2;
+        grid-row: 1 / 2;
+        border-radius: 10px;
+      }
+
+      .project-card .project-details {
+        grid-column: 2 / 3;
+        grid-row: 1 / 2;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        justify-content: center;
+      }
+
+      .project-card .testimonial-card {
+        grid-column: 1 / 3; /* Spans full width below both video and details */
+        grid-row: 2 / 3;
+        padding: 12px;
+        border-radius: 0 10px 10px 0;
+        margin-top: 4px;
+      }
+
+      .project-client {
+        font-size: 9px;
+        letter-spacing: 1px;
       }
       
       .project-title {
-        font-size: 20px;
+        font-size: 13px;
+        line-height: 1.3;
       }
 
-      .video-wrapper {
-        border-radius: 12px;
+      .project-card .tag-container {
+        gap: 4px;
       }
 
-      .testimonial-card {
-        padding: 16px;
-        border-radius: 0 12px 12px 0;
-        margin-top: 8px;
+      .project-card .tag {
+        font-size: 9px;
+        padding: 4px 8px;
       }
 
       .testimonial-text {
-        font-size: 12.5px;
-        line-height: 1.5;
+        font-size: 11.5px;
+        line-height: 1.4;
       }
 
       .testimonial-author {
-        font-size: 11px;
+        font-size: 10px;
       }
       
+      /* 2 Columns on Mobile for More Demo Works */
       .work-grid {
-        grid-template-columns: 1fr; /* Force 1 column for other demos on mobile */
-        gap: 24px;
+        grid-template-columns: repeat(2, 1fr); /* 2 works in one line */
+        gap: 12px;
       }
       
       .grid-project-card {
-        border-radius: 14px;
+        border-radius: 10px;
       }
       
       .project-info-box {
-        padding: 16px;
+        padding: 10px;
       }
       
       .project-info-box h3 {
-        font-size: 16px;
+        font-size: 11px;
+        margin-bottom: 4px;
       }
 
       .project-info-box p {
-        font-size: 12px;
-        line-height: 1.5;
-        margin-bottom: 12px;
+        font-size: 9.5px;
+        line-height: 1.3;
+        margin-bottom: 8px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Uniform clamped height */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .grid-project-card .tag-container {
+        gap: 4px;
+      }
+
+      .grid-project-card .tag {
+        font-size: 8px;
+        padding: 3px 6px;
       }
 
       .about-paragraph {
@@ -1107,15 +1170,17 @@
         </div>
         
         <div class="project-meta">
-          <div>
-            <div class="project-client">Client Work</div>
-            <div class="project-title">SaaS Explainer · AI Content Studio</div>
-          </div>
-          
-          <div class="tag-container">
-            <span class="tag">After Effects</span>
-            <span class="tag">Custom UI Shapes</span>
-            <span class="tag">SaaS Explainer Video</span>
+          <div class="project-details">
+            <div>
+              <div class="project-client">Client Work</div>
+              <div class="project-title">SaaS Explainer · AI Content Studio</div>
+            </div>
+            
+            <div class="tag-container">
+              <span class="tag">After Effects</span>
+              <span class="tag">Custom UI Shapes</span>
+              <span class="tag">SaaS Explainer Video</span>
+            </div>
           </div>
 
           <!-- Testimonial -->
@@ -1315,7 +1380,7 @@
         <!-- Side-by-Side Glass Pill Buttons -->
         <div class="contact-buttons">
           <a href="mailto:yuvasukuna09@gmail.com" class="pill-btn">Send an email</a>
-          <a href="https://instagram.com/yuvasukuna" target="_blank" rel="noopener" class="pill-btn">Instagram</a>
+          <a href="https://instagram.com/yuvasukuna.ae" target="_blank" rel="noopener" class="pill-btn">Instagram</a>
         </div>
 
       </div>
@@ -1358,6 +1423,7 @@
     });
 
     // Track scroll position & velocity
+    let scrollStopTimeout;
     window.addEventListener('scroll', () => {
       scrollY = window.scrollY;
       document.documentElement.style.setProperty('--scroll', scrollY);
@@ -1388,7 +1454,47 @@
           a.classList.add('active');
         }
       });
+
+      // Auto-play video closest to viewport center when scrolling stops on mobile
+      if (window.innerWidth < 768) {
+        clearTimeout(scrollStopTimeout);
+        scrollStopTimeout = setTimeout(() => {
+          playCenteredVideo();
+        }, 150);
+      }
     });
+
+    function playCenteredVideo() {
+      const videos = document.querySelectorAll('.video-wrapper video');
+      let closestVideo = null;
+      let minDistance = Infinity;
+      const centerY = window.innerHeight / 2;
+
+      videos.forEach(video => {
+        const rect = video.getBoundingClientRect();
+        const videoCenterY = rect.top + rect.height / 2;
+        const distance = Math.abs(centerY - videoCenterY);
+
+        const isVisible = (rect.top < window.innerHeight && rect.bottom > 0);
+
+        if (isVisible && distance < minDistance) {
+          minDistance = distance;
+          closestVideo = video;
+        }
+      });
+
+      videos.forEach(video => {
+        if (video === closestVideo) {
+          if (video.paused && !video.classList.contains('user-activated')) {
+            video.play().catch(err => {});
+          }
+        } else {
+          if (!video.paused && !video.classList.contains('user-activated')) {
+            video.pause();
+          }
+        }
+      });
+    }
 
     // Track mouse & mobile touch positions
     const mouse = { x: null, y: null, radius: window.innerWidth < 768 ? 60 : 120 };
