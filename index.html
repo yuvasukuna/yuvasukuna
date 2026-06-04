@@ -134,19 +134,52 @@
       opacity: 0.85;
     }
 
+    nav {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
     nav a {
       color: var(--text-muted);
       text-decoration: none;
-      margin-left: 28px;
-      font-size: 13px;
-      font-weight: 600;
+      margin-left: 12px;
+      font-size: 15px; /* Bigger nav links */
+      font-weight: 700;
       letter-spacing: 0.5px;
       text-transform: uppercase;
       transition: color 0.3s ease;
+      position: relative;
+      padding: 6px 16px;
+      z-index: 2;
     }
 
     nav a:hover, nav a.active {
       color: var(--text-main);
+    }
+
+    .nav-indicator {
+      position: absolute;
+      height: 34px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 99px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 1;
+      pointer-events: none;
+      left: 0;
+      width: 0;
+      transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                  width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .nav-indicator.liquid-stretch {
+      transform: scaleY(0.7) scaleX(1.18);
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
     }
 
     /* Main Container */
@@ -330,32 +363,7 @@
       transform: scale(1.015);
     }
 
-    /* Custom play button overlay */
-    .play-btn-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0, 0, 0, 0.25);
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-      z-index: 5;
-    }
 
-    .play-btn-overlay svg {
-      width: 60px;
-      height: 60px;
-      color: white;
-      filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.6));
-      opacity: 0.85;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-
-    .video-wrapper:hover .play-btn-overlay svg {
-      opacity: 1;
-      transform: scale(1.12);
-    }
 
     /* Selected Work Panel (Featured) - Scale Pop & Zoom Parallax */
     .project-card {
@@ -802,9 +810,14 @@
       }
       
       nav a {
-        margin-left: 14px;
-        font-size: 11px;
+        margin-left: 10px;
+        font-size: 13px; /* Bigger nav links on mobile */
         letter-spacing: 0.1px;
+        padding: 4px 10px;
+      }
+      
+      .nav-indicator {
+        height: 28px;
       }
       
       section {
@@ -1059,8 +1072,9 @@
       }
       
       nav a {
-        margin: 0 8px;
-        font-size: 10px;
+        margin: 0 4px;
+        font-size: 12px; /* Bigger nav links on very tiny screens */
+        padding: 4px 8px;
       }
       
       .glass-shapes-row {
@@ -1106,6 +1120,7 @@
   <header>
     <a href="#hero" class="brand-nav">YuvaSukuna</a>
     <nav>
+      <div class="nav-indicator"></div>
       <a href="#hero" class="active">Home</a>
       <a href="#work">Work</a>
       <a href="#about">About</a>
@@ -1162,11 +1177,6 @@
       <div class="project-card">
         <div class="video-wrapper">
           <video src="AI CONTENT STUDIO/AI CONTENT STUDIO.mp4" loop muted playsinline></video>
-          <div class="play-btn-overlay">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          </div>
         </div>
         
         <div class="project-meta">
@@ -1203,11 +1213,6 @@
         <div class="grid-project-card scroll-reveal" data-reveal-dir="up">
           <div class="video-wrapper">
             <video src="PORTFOLIO/REVOLT_FINAL.mp4" loop muted playsinline></video>
-            <div class="play-btn-overlay">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-            </div>
           </div>
           <div class="project-info-box">
             <h3>SaaS Explainer · Revolt</h3>
@@ -1223,11 +1228,6 @@
         <div class="grid-project-card scroll-reveal" data-reveal-dir="up">
           <div class="video-wrapper">
             <video src="PORTFOLIO/YUVASUKUNA(FLOWIQ)FINAL.mp4" loop muted playsinline></video>
-            <div class="play-btn-overlay">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-            </div>
           </div>
           <div class="project-info-box">
             <h3>SaaS Explainer · FlowIQ</h3>
@@ -1243,11 +1243,6 @@
         <div class="grid-project-card scroll-reveal" data-reveal-dir="up">
           <div class="video-wrapper">
             <video src="PORTFOLIO/op.mp4" loop muted playsinline></video>
-            <div class="play-btn-overlay">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-            </div>
           </div>
           <div class="project-info-box">
             <h3>Featured Motion Sequence</h3>
@@ -1263,11 +1258,6 @@
         <div class="grid-project-card scroll-reveal" data-reveal-dir="up">
           <div class="video-wrapper">
             <video src="PORTFOLIO/USER340129{08}.mp4" loop muted playsinline></video>
-            <div class="play-btn-overlay">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-            </div>
           </div>
           <div class="project-info-box">
             <h3>UI Concept Work · 08</h3>
@@ -1283,11 +1273,6 @@
         <div class="grid-project-card scroll-reveal" data-reveal-dir="up">
           <div class="video-wrapper">
             <video src="PORTFOLIO/USER340129{09}.mp4" loop muted playsinline></video>
-            <div class="play-btn-overlay">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-            </div>
           </div>
           <div class="project-info-box">
             <h3>UI Concept Work · 09</h3>
@@ -1807,22 +1792,91 @@
       }
     });
 
-    // Hover to Play / Click to Activate Video Logic
+    // Bouncing Liquid Glass Nav Indicator Logic
+    const indicator = document.querySelector('.nav-indicator');
+    const nav = document.querySelector('nav');
+    
+    function updateNavIndicator(activeEl, triggerLiquid = false) {
+      if (!indicator || !activeEl) return;
+      
+      const activeRect = activeEl.getBoundingClientRect();
+      const navRect = nav.getBoundingClientRect();
+      
+      const left = activeRect.left - navRect.left + nav.scrollLeft;
+      const width = activeRect.width;
+      
+      if (triggerLiquid) {
+        const currentLeft = parseFloat(indicator.style.left) || 0;
+        const delta = left - currentLeft;
+        
+        if (Math.abs(delta) > 5) {
+          indicator.classList.add('liquid-stretch');
+          indicator.style.left = `${left}px`;
+          indicator.style.width = `${width}px`;
+          
+          setTimeout(() => {
+            indicator.classList.remove('liquid-stretch');
+          }, 350);
+          return;
+        }
+      }
+      
+      indicator.style.left = `${left}px`;
+      indicator.style.width = `${width}px`;
+    }
+
+    let isNavClicking = false;
+    document.querySelectorAll('nav a').forEach(a => {
+      a.addEventListener('click', () => {
+        isNavClicking = true;
+        document.querySelectorAll('nav a').forEach(link => link.classList.remove('active'));
+        a.classList.add('active');
+        updateNavIndicator(a, true);
+        setTimeout(() => {
+          isNavClicking = false;
+        }, 600);
+      });
+    });
+
+    window.addEventListener('load', () => {
+      const activeNav = document.querySelector('nav a.active');
+      if (activeNav) {
+        // Initialize position on page load
+        setTimeout(() => {
+          updateNavIndicator(activeNav, false);
+        }, 100);
+      }
+    });
+
+    // IntersectionObserver Video Auto-play / Pause logic on Viewport visibility
+    const videoObserverOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.15
+    };
+
+    const videoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const video = entry.target;
+        if (entry.isIntersecting) {
+          if (video.paused && !video.classList.contains('user-activated')) {
+            video.play().catch(err => {});
+          }
+        } else {
+          if (!video.paused && !video.classList.contains('user-activated')) {
+            video.pause();
+          }
+        }
+      });
+    }, videoObserverOptions);
+
+    document.querySelectorAll('.video-wrapper video').forEach(video => {
+      videoObserver.observe(video);
+    });
+
+    // Click to activate / unmute Video Logic
     document.querySelectorAll('.video-wrapper').forEach(wrapper => {
       const video = wrapper.querySelector('video');
-      const overlay = wrapper.querySelector('.play-btn-overlay');
-
-      wrapper.addEventListener('mouseenter', () => {
-        if (!video.classList.contains('user-activated')) {
-          video.play().catch(err => {});
-        }
-      });
-
-      wrapper.addEventListener('mouseleave', () => {
-        if (!video.classList.contains('user-activated')) {
-          video.pause();
-        }
-      });
 
       wrapper.addEventListener('click', () => {
         if (!video.classList.contains('user-activated')) {
@@ -1830,9 +1884,6 @@
           video.setAttribute('controls', 'true');
           video.muted = false;
           video.play().catch(err => {});
-          if (overlay) {
-            overlay.style.opacity = '0';
-          }
         }
       });
     });
