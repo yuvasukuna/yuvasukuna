@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YuvaSukuna · SaaS Explainer Motion Designer</title>
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Design Tokens & CSS Variables */
+    :root {
+      --bg-dark: #030308;
+      --primary: #7c3aed;
+      --primary-glow: rgba(124, 58, 237, 0.15);
+      --secondary: #ec4899;
+      --secondary-glow: rgba(236, 72, 153, 0.15);
+      --accent: #06b6d4;
+      --accent-glow: rgba(6, 182, 212, 0.15);
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --card-bg: rgba(8, 8, 16, 0.6);
+      --scroll: 0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro", "SF Pro Text", "Helvetica Neue", "Inter", sans-serif;
+      overflow-x: hidden;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Fixed space particle background wrapper */
+    .space-wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      background: radial-gradient(circle at 50% 50%, #080816 0%, #020205 100%);
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: auto; /* Enable mouse interactions */
+    }
+
+    /* Radial blur ambient orbs reacting to scroll */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(100px);
+      opacity: 0.22;
+      mix-blend-mode: screen;
+      transition: transform 0.1s cubic-bezier(0.1, 0.8, 0.2, 1);
+    }
+
+    .orb1 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+      top: -150px;
+      left: -150px;
+      transform: translateY(calc(var(--scroll) * -0.12px));
+    }
+
+    .orb2 {
+      width: 550px;
+      height: 550px;
+      background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);
+      top: 35%;
+      right: -180px;
+      transform: translateY(calc(var(--scroll) * -0.2px));
+    }
+
+    .orb3 {
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+      bottom: -100px;
+      left: 20%;
+      transform: translateY(calc(var(--scroll) * -0.08px));
+    }
+
+    /* Navigation */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 24px 8%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      background: rgba(3, 3, 8, 0.4);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .brand-nav {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro", sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .brand-nav span {
+      background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-left: 28px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover, nav a.active {
+      color: var(--text-main);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 120px 0;
+      position: relative;
+    }
+
+    /* Hero layout */
+    .hero-center {
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .brand-title {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro", sans-serif;
+      font-size: clamp(48px, 12vw, 110px);
+      font-weight: 900;
+      letter-spacing: -4px;
+      text-transform: uppercase;
+      line-height: 0.9;
+      margin-bottom: 24px;
+      color: var(--text-main);
+      position: relative;
+    }
+
+    .brand-title span {
+      background: linear-gradient(to right, #ffffff, #a78bfa, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .headline {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(24px, 5vw, 48px);
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      background: linear-gradient(to right, #fff, #9ca3af);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subline {
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: var(--text-muted);
+      max-width: 600px;
+      font-weight: 400;
+      margin-bottom: 40px;
+    }
+
+    /* Interactive Glass Shapes */
+    .glass-shapes-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .glass-shape {
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 16px 28px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: var(--text-main);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .glass-shape::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .glass-shape.shape-ae::before { background-color: var(--primary); }
+    .glass-shape.shape-ui::before { background-color: var(--secondary); }
+    .glass-shape.shape-story::before { background-color: var(--accent); }
+
+    .glass-shape:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 10px 40px rgba(124, 58, 237, 0.15);
+    }
+
+    .glass-shape:active {
+      transform: translateY(-2px) scale(0.98);
+    }
+
+    /* Stats Grid */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 56px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 40px;
+      width: 100%;
+      max-width: 700px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-val {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-lbl {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+
+    /* Section titles */
+    .section-title {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro", sans-serif;
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+    }
+
+    /* Video Player Mockup styling */
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #000;
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    }
+
+    .video-wrapper video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+
+    .video-wrapper:hover video {
+      transform: scale(1.015);
+    }
+
+    /* Satisfying custom HTML5 play button overlay */
+    .play-btn-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.25);
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .play-btn-overlay svg {
+      width: 60px;
+      height: 60px;
+      color: white;
+      filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.6));
+      opacity: 0.85;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .video-wrapper:hover .play-btn-overlay svg {
+      opacity: 1;
+      transform: scale(1.12);
+    }
+
+    /* Selected Work Panel (Featured) */
+    .project-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 48px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 48px;
+      align-items: center;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+      transition: border-color 0.4s ease;
+      margin-bottom: 60px;
+    }
+
+    .project-card:hover {
+      border-color: rgba(124, 58, 237, 0.3);
+    }
+
+    @media (max-width: 900px) {
+      .project-card {
+        grid-template-columns: 1fr;
+        padding: 24px;
+        gap: 32px;
+      }
+    }
+
+    .project-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .project-client {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--secondary);
+    }
+
+    .project-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+    }
+
+    .tag-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 6px 12px;
+      border-radius: 100px;
+      color: var(--text-muted);
+    }
+
+    /* Testimonial block */
+    .testimonial-card {
+      margin-top: 10px;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.015);
+      border-left: 2px solid var(--primary);
+      border-radius: 0 16px 16px 0;
+    }
+
+    .testimonial-text {
+      font-style: italic;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .testimonial-author {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .testimonial-author a {
+      color: var(--primary);
+      text-decoration: none;
+      margin-left: 4px;
+    }
+
+    .testimonial-author a:hover {
+      text-decoration: underline;
+    }
+
+    /* Works Grid (All videos library) */
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+    }
+
+    .grid-project-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      transition: all 0.4s ease;
+    }
+
+    .grid-project-card:hover {
+      border-color: rgba(124, 58, 237, 0.25);
+      transform: translateY(-5px);
+      box-shadow: 0 30px 50px rgba(124, 58, 237, 0.08);
+    }
+
+    .project-info-box {
+      padding: 24px;
+    }
+
+    .project-info-box h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .project-info-box p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* About Section Grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 48px;
+    }
+
+    @media (max-width: 768px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+    }
+
+    .info-block h3 {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro", sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--secondary);
+    }
+
+    .skills-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .skill-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      padding-bottom: 12px;
+    }
+
+    .skill-name {
+      font-weight: 500;
+      font-size: 15px;
+    }
+
+    .skill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 8px var(--primary);
+    }
+
+    .services-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .service-card {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .service-card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .service-card h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .service-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Contact / CTA Redesign */
+    .cta-container {
+      position: relative;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 80px 40px;
+      border-radius: 32px;
+      border: 1px solid var(--border-color);
+      background: rgba(8, 8, 20, 0.4);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Decorative Overlapping Frosted Glass Shapes Behind Headline */
+    .cta-backdrop {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .backdrop-shape {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.012);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      mix-blend-mode: screen;
+    }
+
+    .backdrop-shape.shape-1 {
+      width: 320px;
+      height: 180px;
+      top: 5%;
+      left: 8%;
+      transform: rotate(-15deg);
+      border-radius: 30px;
+    }
+
+    .backdrop-shape.shape-2 {
+      width: 280px;
+      height: 280px;
+      bottom: -15%;
+      right: 5%;
+      transform: rotate(22deg);
+      border-radius: 50%;
+    }
+
+    .backdrop-shape.shape-3 {
+      width: 220px;
+      height: 120px;
+      top: -10%;
+      right: 15%;
+      transform: rotate(35deg);
+      border-radius: 20px;
+    }
+
+    /* Pulsing green availability badge */
+    .availability-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #10b981;
+      backdrop-filter: blur(10px);
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #10b981;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .pulse-dot::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #10b981;
+      border-radius: 50%;
+      animation: dotPulse 1.8s infinite ease-in-out;
+    }
+
+    @keyframes dotPulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(2.6); opacity: 0; }
+    }
+
+    /* Large elegant mixed-case headline */
+    .contact-headline {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro", sans-serif;
+      font-size: clamp(34px, 6vw, 56px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #ffffff 40%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      z-index: 2;
+    }
+
+    .contact-subline {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto 36px auto;
+      font-weight: 400;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Glass pill buttons side-by-side */
+    .contact-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      position: relative;
+      z-index: 2;
+    }
+
+    @media (max-width: 480px) {
+      .contact-buttons {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 36px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      text-decoration: none;
+      border-radius: 9999px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .pill-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(167, 139, 250, 0.4);
+      box-shadow: 0 0 25px rgba(124, 58, 237, 0.25);
+      transform: translateY(-3px);
+    }
+
+    .pill-btn:active {
+      transform: translateY(-1px);
+    }
+
+    /* Footer */
+    footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Dynamic Space background -->
+  <div class="space-wrap">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+    <canvas id="c"></canvas>
+  </div>
+
+  <!-- Header Nav -->
+  <header>
+    <a href="#hero" class="brand-nav">Yuva<span>Sukuna</span></a>
+    <nav>
+      <a href="#hero" class="active">Home</a>
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    
+    <!-- Hero Section -->
+    <section id="hero">
+      <div class="hero-center">
+        <div class="brand-title"><span>YuvaSukuna</span></div>
+        <h1 class="headline">I create demos that sell.</h1>
+        <p class="subline">Motion design for SaaS founders who want their product to speak for itself.</p>
+        
+        <!-- Addictive Interactive Glass Shapes -->
+        <div class="glass-shapes-row">
+          <div class="glass-shape shape-ae" onclick="triggerGlassBurst(event, '#7c3aed', 'Frame by Frame AE')">
+            Frame-by-Frame
+          </div>
+          <div class="glass-shape shape-ui" onclick="triggerGlassBurst(event, '#ec4899', 'Custom UI Animation')">
+            Custom UI Animation
+          </div>
+          <div class="glass-shape shape-story" onclick="triggerGlassBurst(event, '#06b6d4', 'SaaS Storytelling')">
+            SaaS Storytelling
+          </div>
+        </div>
+
+        <!-- Stats section -->
+        <div class="stats-container">
+          <div class="stat-item">
+            <div class="stat-val">1+</div>
+            <div class="stat-lbl">Project Delivered</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val">100%</div>
+            <div class="stat-lbl">Client Satisfaction</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val">Handcrafted</div>
+            <div class="stat-lbl">Frame by frame craft</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Work Section -->
+    <section id="work">
+      <h2 class="section-title">Selected Work</h2>
+      
+      <!-- Featured Project: AI Content Studio -->
+      <div class="project-card">
+        <div class="video-wrapper">
+          <video src="AI CONTENT STUDIO/AI CONTENT STUDIO.mp4" loop muted playsinline></video>
+          <div class="play-btn-overlay">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
+        </div>
+        
+        <div class="project-meta">
+          <div>
+            <div class="project-client">Client Work</div>
+            <div class="project-title">SaaS Explainer · AI Content Studio</div>
+          </div>
+          
+          <div class="tag-container">
+            <span class="tag">After Effects</span>
+            <span class="tag">Custom UI Shapes</span>
+            <span class="tag">SaaS Explainer Video</span>
+          </div>
+
+          <!-- Testimonial -->
+          <div class="testimonial-card">
+            <p class="testimonial-text">
+              "The quality of the visuals, storytelling, and execution exceeded our expectations in every way. Your attention to detail and creativity really shone through — the video perfectly captured the essence of what we wanted to communicate."
+            </p>
+            <div class="testimonial-author">
+              — AI Content Studio Team · <a href="https://aicontentstudio.ink" target="_blank" rel="noopener">aicontentstudio.ink</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video Grid library of all work -->
+      <h2 class="section-title" style="margin-top: 40px; margin-bottom: 24px; font-size: 22px;">More Motion Demos</h2>
+      
+      <div class="work-grid">
+        <!-- Revolt Final -->
+        <div class="grid-project-card">
+          <div class="video-wrapper">
+            <video src="PORTFOLIO/REVOLT_FINAL.mp4" loop muted playsinline></video>
+            <div class="play-btn-overlay">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="project-info-box">
+            <h3>SaaS Explainer · Revolt</h3>
+            <p>High-fidelity UI animation highlighting automated workflow interactions and core SaaS panels.</p>
+            <div class="tag-container">
+              <span class="tag">After Effects</span>
+              <span class="tag">UI Motion</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- FlowIQ Final -->
+        <div class="grid-project-card">
+          <div class="video-wrapper">
+            <video src="PORTFOLIO/YUVASUKUNA(FLOWIQ)FINAL.mp4" loop muted playsinline></video>
+            <div class="play-btn-overlay">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="project-info-box">
+            <h3>SaaS Explainer · FlowIQ</h3>
+            <p>Premium dark-mode UI explainer demo highlighting complex analytical features and visual transitions.</p>
+            <div class="tag-container">
+              <span class="tag">After Effects</span>
+              <span class="tag">Product Walkthrough</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Showreel/Op -->
+        <div class="grid-project-card">
+          <div class="video-wrapper">
+            <video src="PORTFOLIO/op.mp4" loop muted playsinline></video>
+            <div class="play-btn-overlay">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="project-info-box">
+            <h3>Featured Motion Sequence</h3>
+            <p>High-energy fluid visual compilation showcase demonstrating advanced transition layouts.</p>
+            <div class="tag-container">
+              <span class="tag">Keyframes</span>
+              <span class="tag">Showcase</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Concept 08 -->
+        <div class="grid-project-card">
+          <div class="video-wrapper">
+            <video src="PORTFOLIO/USER340129{08}.mp4" loop muted playsinline></video>
+            <div class="play-btn-overlay">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="project-info-box">
+            <h3>UI Concept Work · 08</h3>
+            <p>Experimental hand-crafted frame-by-frame UI shapes and vector dashboard transforms.</p>
+            <div class="tag-container">
+              <span class="tag">Frame-by-Frame</span>
+              <span class="tag">Experiment</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Concept 09 -->
+        <div class="grid-project-card">
+          <div class="video-wrapper">
+            <video src="PORTFOLIO/USER340129{09}.mp4" loop muted playsinline></video>
+            <div class="play-btn-overlay">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="project-info-box">
+            <h3>UI Concept Work · 09</h3>
+            <p>Micro-interactions and glowing click animations designed custom for dashboard founders.</p>
+            <div class="tag-container">
+              <span class="tag">Micro-interaction</span>
+              <span class="tag">AE Shapes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+      <h2 class="section-title">About & Services</h2>
+      
+      <div style="margin-bottom: 56px; max-width: 850px;">
+        <p style="font-size: 18px; line-height: 1.8; color: var(--text-main); font-weight: 300;">
+          I'm Yuvaraj, a freelance SaaS explainer motion designer. I build custom UI animations frame by frame in After Effects — every shape, every transition, crafted by hand. I'm early in my journey but obsessed with the craft.
+        </p>
+      </div>
+
+      <div class="info-grid">
+        <!-- Skills -->
+        <div class="info-block">
+          <h3>Skills & Tools</h3>
+          <div class="skills-list">
+            <div class="skill-row">
+              <span class="skill-name">After Effects</span>
+              <span class="skill-dot"></span>
+            </div>
+            <div class="skill-row">
+              <span class="skill-name">Custom UI Animation</span>
+              <span class="skill-dot"></span>
+            </div>
+            <div class="skill-row">
+              <span class="skill-name">SaaS Storytelling</span>
+              <span class="skill-dot"></span>
+            </div>
+            <div class="skill-row">
+              <span class="skill-name">Motion Graphics</span>
+              <span class="skill-dot"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Services -->
+        <div class="info-block">
+          <h3>What I Offer</h3>
+          <div class="services-list">
+            <div class="service-card">
+              <h4>Explainer videos</h4>
+              <p>Tailored high-end SaaS animations that describe your product's flow clearly.</p>
+            </div>
+            <div class="service-card">
+              <h4>Product demos</h4>
+              <p>Polished walkthrough animations that highlight features and convert users.</p>
+            </div>
+            <div class="service-card">
+              <h4>UI animation</h4>
+              <p>Hand-crafted shape-by-shape animations of interface details and elements.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+      <div class="cta-container">
+        
+        <!-- Decorative Frosted Glass Overlaps Behind Headline -->
+        <div class="cta-backdrop">
+          <div class="backdrop-shape shape-1"></div>
+          <div class="backdrop-shape shape-2"></div>
+          <div class="backdrop-shape shape-3"></div>
+        </div>
+
+        <!-- Availability badge -->
+        <div class="availability-badge">
+          <span class="pulse-dot"></span>
+          Available for projects
+        </div>
+
+        <!-- Headline & Subheadline -->
+        <h2 class="contact-headline">Let's build something great.</h2>
+        <p class="contact-subline">Open for SaaS explainer projects — let's talk about your product.</p>
+        
+        <!-- Side-by-Side Glass Pill Buttons -->
+        <div class="contact-buttons">
+          <a href="mailto:yuvasukuna09@gmail.com" class="pill-btn">Send an email</a>
+          <a href="https://instagram.com/yuva.sukuna" target="_blank" rel="noopener" class="pill-btn">Instagram</a>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <p>&copy; 2026 YuvaSukuna. Grounded, professional, and hand-crafted motion design.</p>
+  </footer>
+
+  <script>
+    // Canvas setup
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    let scrollY = 0;
+
+    function resize() {
+      const wrap = canvas.parentElement;
+      W = canvas.width = wrap.offsetWidth;
+      H = canvas.height = wrap.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Track scroll position
+    window.addEventListener('scroll', () => {
+      scrollY = window.scrollY;
+      document.documentElement.style.setProperty('--scroll', scrollY);
+      
+      // Update active nav link
+      const sections = ['hero', 'work', 'about', 'contact'];
+      let current = 'hero';
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 200) {
+            current = id;
+          }
+        }
+      });
+      document.querySelectorAll('nav a').forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === `#${current}`) {
+          a.classList.add('active');
+        }
+      });
+    });
+
+    // Track mouse position
+    const mouse = { x: null, y: null, radius: 120 };
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+    window.addEventListener('mouseleave', () => {
+      mouse.x = null;
+      mouse.y = null;
+    });
+
+    const PARTICLE_COUNT = 150;
+    const particles = [];
+    const shootingStars = [];
+    const burstParticles = []; // Burst particles triggered by click
+
+    class Particle {
+      constructor() {
+        this.init(true);
+      }
+      
+      init(randomY = false) {
+        this.x = Math.random() * W;
+        this.y = randomY ? Math.random() * H : -10;
+        
+        // Some stars are big ambient blurry dust particles, others are sharp twinkles
+        const type = Math.random();
+        if (type < 0.2) {
+          this.r = Math.random() * 6.5 + 4.5; // Big ambient particles
+          this.isBlur = true;
+          this.base = Math.random() * 0.18 + 0.05; // lower opacity for big blur particles
+        } else {
+          this.r = Math.random() * 3.2 + 1.2; // Much bigger sharp particles
+          this.isBlur = false;
+          this.base = Math.random() * 0.45 + 0.15;
+        }
+        
+        this.vx = (Math.random() - 0.5) * 0.18;
+        this.vy = (Math.random() - 0.5) * 0.18;
+        
+        this.offsetX = 0;
+        this.offsetY = 0;
+
+        this.opacity = this.base;
+        this.twinkleSpeed = 0.003 + Math.random() * 0.008;
+        this.twinkleDir = Math.random() > 0.5 ? 1 : -1;
+        
+        const t = Math.random();
+        if (t < 0.4) this.hue = [124, 58, 237];      // violet/purple
+        else if (t < 0.7) this.hue = [236, 72, 153];  // pink
+        else if (t < 0.85) this.hue = [6, 182, 212];  // cyan
+        else this.hue = [255, 255, 255];              // white
+      }
+
+      getRenderCoords() {
+        const scrollFactor = this.r * 0.14; 
+        let ry = this.y - (scrollY * scrollFactor) + this.offsetY;
+        let rx = this.x + this.offsetX;
+
+        rx = ((rx % W) + W) % W;
+        ry = ((ry % H) + H) % H;
+
+        return { x: rx, y: ry };
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        this.opacity += this.twinkleSpeed * this.twinkleDir;
+        if (this.opacity > this.base + 0.25 || this.opacity < this.base - 0.12) {
+          this.twinkleDir *= -1;
+        }
+
+        const coords = this.getRenderCoords();
+
+        // Mouse Evasion
+        if (mouse.x !== null && mouse.y !== null) {
+          const dx = coords.x - mouse.x;
+          const dy = coords.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < mouse.radius) {
+            const force = (mouse.radius - dist) / mouse.radius;
+            const pushX = (dx / dist) * force * 2.0;
+            const pushY = (dy / dist) * force * 2.0;
+
+            this.offsetX += pushX;
+            this.offsetY += pushY;
+          }
+        }
+
+        // Dampen offset
+        this.offsetX *= 0.94;
+        this.offsetY *= 0.94;
+
+        if (this.x < -15) this.x = W + 15;
+        if (this.x > W + 15) this.x = -15;
+        if (this.y < -15) this.y = H + 15;
+        if (this.y > H + 15) this.y = -15;
+      }
+
+      draw() {
+        const { x, y } = this.getRenderCoords();
+        ctx.beginPath();
+        ctx.arc(x, y, this.r, 0, Math.PI * 2);
+        
+        if (this.isBlur) {
+          // Large glowing soft particle
+          const g = ctx.createRadialGradient(x, y, 0, x, y, this.r);
+          g.addColorStop(0, `rgba(${this.hue[0]},${this.hue[1]},${this.hue[2]},${Math.max(0.01, this.opacity)})`);
+          g.addColorStop(1, `rgba(${this.hue[0]},${this.hue[1]},${this.hue[2]},0)`);
+          ctx.fillStyle = g;
+        } else {
+          ctx.fillStyle = `rgba(${this.hue[0]},${this.hue[1]},${this.hue[2]},${Math.max(0.04, this.opacity)})`;
+        }
+        ctx.fill();
+      }
+    }
+
+    class ShootingStar {
+      constructor() { this.spawn(); }
+      spawn() {
+        this.x = Math.random() * W * 0.7;
+        this.y = Math.random() * H * 0.4;
+        const angle = (Math.PI / 6) + Math.random() * (Math.PI / 8);
+        const speed = 8 + Math.random() * 8;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.len = 70 + Math.random() * 90;
+        this.opacity = 1;
+        this.fade = 0.02 + Math.random() * 0.015;
+        this.width = 0.8 + Math.random() * 0.8;
+        
+        const t = Math.random();
+        this.color = t < 0.6 ? [255, 255, 255] : t < 0.8 ? [124, 58, 237] : [236, 72, 153];
+        this.active = true;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.opacity -= this.fade;
+        if (this.opacity <= 0) this.active = false;
+      }
+      draw() {
+        const tailX = this.x - this.vx * (this.len / 10);
+        const tailY = this.y - this.vy * (this.len / 10);
+        const grd = ctx.createLinearGradient(tailX, tailY, this.x, this.y);
+        grd.addColorStop(0, `rgba(${this.color[0]},${this.color[1]},${this.color[2]},0)`);
+        grd.addColorStop(0.6, `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${this.opacity * 0.3})`);
+        grd.addColorStop(1, `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${this.opacity})`);
+        
+        ctx.beginPath();
+        ctx.moveTo(tailX, tailY);
+        ctx.lineTo(this.x, this.y);
+        ctx.strokeStyle = grd;
+        ctx.lineWidth = this.width;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+      }
+    }
+
+    // Click Burst Particles
+    class BurstParticle {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2 + Math.random() * 8;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.r = Math.random() * 4 + 1.5;
+        this.opacity = 1.0;
+        this.fade = 0.015 + Math.random() * 0.02;
+        this.color = color;
+        this.active = true;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vx *= 0.95;
+        this.vy *= 0.95;
+        this.opacity -= this.fade;
+        if (this.opacity <= 0) this.active = false;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color[0]}, ${this.color[1]}, ${this.color[2]}, ${this.opacity})`;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = `rgba(${this.color[0]}, ${this.color[1]}, ${this.color[2]}, 0.5)`;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    }
+
+    // Initialize stars
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push(new Particle());
+    }
+
+    let lastShoot = 0;
+    let nextDelay = 2000 + Math.random() * 3000;
+
+    // Constellation lines
+    function drawConnections() {
+      const threshold = 80;
+      for (let i = 0; i < particles.length; i++) {
+        if (particles[i].isBlur) continue;
+        const p1 = particles[i].getRenderCoords();
+        
+        for (let j = i + 1; j < particles.length; j++) {
+          if (particles[j].isBlur) continue;
+          const p2 = particles[j].getRenderCoords();
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+
+          if (d < threshold) {
+            const alpha = (1 - d / threshold) * 0.05;
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(167, 139, 250, ${alpha})`;
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    // Trigger explosive visual burst on clicking glass shapes
+    function triggerGlassBurst(event, hexColor, name) {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      
+      const r = parseInt(hexColor.slice(1, 3), 16);
+      const g = parseInt(hexColor.slice(3, 5), 16);
+      const b = parseInt(hexColor.slice(5, 7), 16);
+
+      for (let i = 0; i < 30; i++) {
+        burstParticles.push(new BurstParticle(x, y, [r, g, b]));
+      }
+
+      particles.forEach(p => {
+        const pCoords = p.getRenderCoords();
+        const dx = pCoords.x - x;
+        const dy = pCoords.y - y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 180) {
+          p.offsetX += (dx / dist) * 12;
+          p.offsetY += (dy / dist) * 12;
+        }
+      });
+    }
+
+    // Register canvas clicks for smaller bursts
+    canvas.addEventListener('click', (e) => {
+      // Don't trigger if clicking on interactive buttons or cards
+      if (e.target !== canvas) return;
+      
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      for (let i = 0; i < 12; i++) {
+        burstParticles.push(new BurstParticle(x, y, [255, 255, 255]));
+      }
+    });
+
+    // Hover to Play / Click to Activate Controls & Unmute Video Logic
+    document.querySelectorAll('.video-wrapper').forEach(wrapper => {
+      const video = wrapper.querySelector('video');
+      const overlay = wrapper.querySelector('.play-btn-overlay');
+
+      // Play muted video on hover
+      wrapper.addEventListener('mouseenter', () => {
+        if (!video.classList.contains('user-activated')) {
+          video.play().catch(err => {});
+        }
+      });
+
+      // Pause video on leave if the user hasn't unmuted it yet
+      wrapper.addEventListener('mouseleave', () => {
+        if (!video.classList.contains('user-activated')) {
+          video.pause();
+        }
+      });
+
+      // Click video wrapper to activate audio and display native timeline controls
+      wrapper.addEventListener('click', () => {
+        if (!video.classList.contains('user-activated')) {
+          video.classList.add('user-activated');
+          video.setAttribute('controls', 'true');
+          video.muted = false;
+          video.play().catch(err => {});
+          if (overlay) {
+            overlay.style.opacity = '0';
+          }
+        }
+      });
+    });
+
+    // Animation Loop
+    function loop(ts) {
+      ctx.clearRect(0, 0, W, H);
+      
+      drawConnections();
+      
+      particles.forEach(p => { p.update(); p.draw(); });
+      
+      for (let i = burstParticles.length - 1; i >= 0; i--) {
+        burstParticles[i].update();
+        burstParticles[i].draw();
+        if (!burstParticles[i].active) {
+          burstParticles.splice(i, 1);
+        }
+      }
+
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        shootingStars[i].update();
+        shootingStars[i].draw();
+        if (!shootingStars[i].active) shootingStars.splice(i, 1);
+      }
+
+      if (ts - lastShoot > nextDelay) {
+        if (document.visibilityState === 'visible') {
+          shootingStars.push(new ShootingStar());
+        }
+        lastShoot = ts;
+        nextDelay = 2500 + Math.random() * 3000;
+      }
+      
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>

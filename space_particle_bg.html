@@ -1,0 +1,206 @@
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+.space-wrap {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  background: #06060f;
+  overflow: hidden;
+  border-radius: 16px;
+}
+canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.orb1 {
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
+  top: -120px; left: -80px;
+  opacity: 0.22;
+  filter: blur(60px);
+}
+.orb2 {
+  width: 320px; height: 320px;
+  background: radial-gradient(circle, #dc2626 0%, transparent 70%);
+  top: -60px; right: -60px;
+  opacity: 0.2;
+  filter: blur(55px);
+}
+.orb3 {
+  width: 260px; height: 260px;
+  background: radial-gradient(circle, #9333ea 0%, transparent 70%);
+  bottom: -80px; left: 38%;
+  opacity: 0.15;
+  filter: blur(50px);
+}
+.label {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.18);
+  font-family: -apple-system, sans-serif;
+}
+</style>
+
+<div class="space-wrap">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <canvas id="c"></canvas>
+  <div class="label">Space background · scroll animation ready</div>
+</div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H;
+
+function resize() {
+  const wrap = canvas.parentElement;
+  W = canvas.width = wrap.offsetWidth;
+  H = canvas.height = wrap.offsetHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const PARTICLE_COUNT = 220;
+const particles = [];
+const shootingStars = [];
+
+class Particle {
+  constructor() { this.init(); }
+  init() {
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.r = Math.random() * 1.6 + 0.3;
+    this.vx = (Math.random() - 0.5) * 0.25;
+    this.vy = (Math.random() - 0.5) * 0.25;
+    this.base = Math.random() * 0.55 + 0.15;
+    this.opacity = this.base;
+    this.twinkleSpeed = 0.008 + Math.random() * 0.012;
+    this.twinkleDir = Math.random() > 0.5 ? 1 : -1;
+    const t = Math.random();
+    if (t < 0.5) this.hue = [167, 139, 250];
+    else if (t < 0.8) this.hue = [248, 113, 113];
+    else this.hue = [255, 255, 255];
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.opacity += this.twinkleSpeed * this.twinkleDir;
+    if (this.opacity > this.base + 0.25 || this.opacity < this.base - 0.12) this.twinkleDir *= -1;
+    if (this.x < -5) this.x = W + 5;
+    if (this.x > W + 5) this.x = -5;
+    if (this.y < -5) this.y = H + 5;
+    if (this.y > H + 5) this.y = -5;
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${this.hue[0]},${this.hue[1]},${this.hue[2]},${Math.max(0, this.opacity)})`;
+    ctx.fill();
+  }
+}
+
+class ShootingStar {
+  constructor() { this.spawn(); }
+  spawn() {
+    this.x = Math.random() * W * 0.7;
+    this.y = Math.random() * H * 0.4;
+    const angle = (Math.PI / 6) + Math.random() * (Math.PI / 8);
+    const speed = 10 + Math.random() * 10;
+    this.vx = Math.cos(angle) * speed;
+    this.vy = Math.sin(angle) * speed;
+    this.len = 90 + Math.random() * 120;
+    this.opacity = 1;
+    this.fade = 0.022 + Math.random() * 0.018;
+    this.width = 1.2 + Math.random() * 1.2;
+    const t = Math.random();
+    this.color = t < 0.6 ? [255,255,255] : t < 0.85 ? [196,181,253] : [248,113,113];
+    this.active = true;
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.opacity -= this.fade;
+    if (this.opacity <= 0) this.active = false;
+  }
+  draw() {
+    const tailX = this.x - this.vx * (this.len / 12);
+    const tailY = this.y - this.vy * (this.len / 12);
+    const grd = ctx.createLinearGradient(tailX, tailY, this.x, this.y);
+    grd.addColorStop(0, `rgba(${this.color[0]},${this.color[1]},${this.color[2]},0)`);
+    grd.addColorStop(0.6, `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${this.opacity * 0.5})`);
+    grd.addColorStop(1, `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${this.opacity})`);
+    ctx.beginPath();
+    ctx.moveTo(tailX, tailY);
+    ctx.lineTo(this.x, this.y);
+    ctx.strokeStyle = grd;
+    ctx.lineWidth = this.width;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.width * 0.9, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${this.opacity * 0.9})`;
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+
+let lastShoot = 0;
+let nextDelay = 2000 + Math.random() * 1500;
+
+function drawConnections() {
+  const threshold = 75;
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if (d < threshold) {
+        const alpha = (1 - d / threshold) * 0.07;
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(167,139,250,${alpha})`;
+        ctx.lineWidth = 0.5;
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+function loop(ts) {
+  ctx.clearRect(0, 0, W, H);
+
+  drawConnections();
+  particles.forEach(p => { p.update(); p.draw(); });
+
+  for (let i = shootingStars.length - 1; i >= 0; i--) {
+    shootingStars[i].update();
+    shootingStars[i].draw();
+    if (!shootingStars[i].active) shootingStars.splice(i, 1);
+  }
+
+  if (ts - lastShoot > nextDelay) {
+    const count = Math.random() < 0.3 ? 2 : 1;
+    for (let k = 0; k < count; k++) {
+      setTimeout(() => shootingStars.push(new ShootingStar()), k * 180);
+    }
+    lastShoot = ts;
+    nextDelay = 1800 + Math.random() * 2200;
+  }
+
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
