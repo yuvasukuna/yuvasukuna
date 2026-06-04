@@ -226,33 +226,30 @@
       background: rgba(255, 255, 255, 0.02);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 16px 28px;
-      border-radius: 16px;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+      color: rgba(255, 255, 255, 0.95);
       cursor: pointer;
       user-select: none;
       transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-      display: flex;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .glass-shape::before {
       content: '';
       display: inline-block;
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
+      background-color: #ffffff; /* Clean white indicator dot */
     }
-
-    .glass-shape.shape-ae::before { background-color: var(--primary); }
-    .glass-shape.shape-ui::before { background-color: var(--secondary); }
-    .glass-shape.shape-story::before { background-color: var(--accent); }
 
     .glass-shape:hover {
       background: rgba(255, 255, 255, 0.06);
@@ -811,26 +808,26 @@
       }
       
       section {
-        padding: 72px 0;
-        min-height: auto; /* Allow sections to shrink to natural content heights on mobile */
+        padding: 80px 0;
+        min-height: 100vh; /* Centered layout presentation on mobile */
       }
       
       .brand-title {
-        font-size: clamp(32px, 10vw, 48px); /* Scale down the giant brand title for mobile */
+        font-size: clamp(28px, 8vw, 38px); /* Refined, smaller brand title */
         letter-spacing: -1.5px;
         margin-bottom: 12px;
       }
       
       .headline {
-        font-size: clamp(18px, 5vw, 24px);
+        font-size: clamp(16px, 4vw, 20px);
         line-height: 1.25;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
       }
       
       .subline {
-        font-size: 13.5px;
-        margin-bottom: 24px;
-        line-height: 1.5;
+        font-size: 12px;
+        margin-bottom: 20px;
+        line-height: 1.4;
       }
       
       .glass-shapes-row {
@@ -840,13 +837,19 @@
         flex-wrap: wrap;
         gap: 8px;
         width: 100%;
-        margin-top: 12px;
+        margin-top: 8px;
       }
 
       .glass-shape {
-        padding: 8px 14px;
-        font-size: 11px;
-        border-radius: 12px;
+        padding: 6px 12px;
+        font-size: 10.5px;
+        border-radius: 10px;
+        gap: 6px;
+      }
+
+      .glass-shape::before {
+        width: 5px;
+        height: 5px;
       }
       
       .stats-container {
@@ -863,14 +866,14 @@
       }
 
       .stat-val {
-        font-size: 20px;
+        font-size: 16px; /* High-end compact size so long titles fit on one line */
         margin-bottom: 4px;
       }
       
       .stat-lbl {
         font-size: 8px;
         letter-spacing: 0.5px;
-        line-height: 1.2;
+        line-height: 1.3;
       }
       
       .project-card {
@@ -1429,12 +1432,14 @@
         this.y = randomY ? Math.random() * H : -10;
         
         const type = Math.random();
-        if (type < 0.2) {
+        // Disable radial gradient blurs on mobile for massive rendering gains
+        if (type < 0.2 && window.innerWidth >= 768) {
           this.r = Math.random() * 6.5 + 4.5;
           this.isBlur = true;
           this.base = Math.random() * 0.18 + 0.05;
         } else {
-          this.r = Math.random() * 3.2 + 1.2;
+          // Smaller stars on mobile for refined look
+          this.r = window.innerWidth < 768 ? (Math.random() * 1.8 + 0.8) : (Math.random() * 3.2 + 1.2);
           this.isBlur = false;
           this.base = Math.random() * 0.45 + 0.15;
         }
@@ -1605,6 +1610,7 @@
 
     // Constellation lines
     function drawConnections() {
+      if (window.innerWidth < 768) return; // Disable connections on mobile for 60fps and less clutter
       const threshold = 80;
       for (let i = 0; i < particles.length; i++) {
         if (particles[i].isBlur) continue;
@@ -1723,7 +1729,7 @@
       else if (dir === 'up') startY = baseDistance;
       else if (dir === 'down') startY = -baseDistance;
 
-      revealElements.push({
+      const state = {
         element: el,
         direction: dir,
         revealed: false,
@@ -1737,19 +1743,23 @@
         targetScale: 0.92,
         currentOpacity: 0,
         targetOpacity: 0
-      });
+      };
+      revealElements.push(state);
+      el.stateRef = state;
     });
 
     const blurRevealElements = [];
     document.querySelectorAll('.scroll-reveal-blur').forEach(el => {
-      blurRevealElements.push({
+      const state = {
         element: el,
         revealed: false,
         currentBlur: 20,
         targetBlur: 20,
         currentOpacity: 0,
         targetOpacity: 0
-      });
+      };
+      blurRevealElements.push(state);
+      el.stateRef = state;
     });
 
     // Separate state tracking for the Featured Project Card (Scale Pop & Parallax Zoom Out)
@@ -1763,82 +1773,91 @@
       currentOpacity: 0,
       targetOpacity: 0
     };
+    if (featuredCard) {
+      featuredCard.stateRef = featuredState;
+    }
 
-    // TIMING SPEED FACTOR: FAST / SNAPPY LERP COEFFICIENTS (0.12)
+    // IntersectionObserver scroll reveal system to eliminate 60fps layout thrashing
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px 0px -8% 0px',
+      threshold: 0.02
+    };
+
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          if (el.stateRef) {
+            el.stateRef.revealed = true;
+            if (el.stateRef.targetOpacity !== undefined) el.stateRef.targetOpacity = 1;
+            if (el.stateRef.targetX !== undefined) el.stateRef.targetX = 0;
+            if (el.stateRef.targetY !== undefined) el.stateRef.targetY = 0;
+            if (el.stateRef.targetBlur !== undefined) el.stateRef.targetBlur = 0;
+            if (el.id === 'about') {
+              const aboutP = document.querySelector('.about-paragraph');
+              if (aboutP && !aboutP.classList.contains('revealed')) {
+                aboutP.classList.add('revealed');
+                const words = aboutP.querySelectorAll('.reveal-word');
+                words.forEach((word, idx) => {
+                  setTimeout(() => {
+                    word.classList.add('visible');
+                  }, idx * 18);
+                });
+              }
+            }
+          }
+          observer.unobserve(el);
+        }
+      });
+    }, observerOptions);
+
+    revealElements.forEach(item => revealObserver.observe(item.element));
+    blurRevealElements.forEach(item => revealObserver.observe(item.element));
+    if (featuredCard) revealObserver.observe(featuredCard);
+    
+    const aboutSection = document.getElementById('about');
+    if (aboutSection) {
+      aboutSection.stateRef = { revealed: false };
+      revealObserver.observe(aboutSection);
+    }
+
     const fastLerp = 0.12;
 
     function updateScrollReveal() {
-      const triggerBottom = window.innerHeight * 0.92;
-
       // 1. Featured Project Card Reveal (Scale Pop + Parallax Zoom-out offscreen)
-      if (featuredCard) {
+      if (featuredCard && featuredState.revealed) {
         const rect = featuredCard.getBoundingClientRect();
+        const viewHeight = window.innerHeight;
+        let progress = (viewHeight - rect.top) / (viewHeight + rect.height);
+        progress = Math.max(0, Math.min(1, progress));
         
-        // Triggers reveal
-        if (rect.top < triggerBottom && rect.bottom > 0) {
-          if (!featuredState.revealed) {
-            featuredState.revealed = true;
-            featuredState.targetOpacity = 1;
-            featuredState.targetScale = 1.05; // POP slightly larger initially
-          }
-        }
-
-        if (featuredState.revealed) {
-          // Dynamic Parallax Zoom Out: as the card scrolls up past center, make it shrink/zoom out
-          const viewHeight = window.innerHeight;
-          let progress = (viewHeight - rect.top) / (viewHeight + rect.height);
-          progress = Math.max(0, Math.min(1, progress));
-          
-          let targetScale = 1.0;
-          if (progress > 0.45) {
-            const shrinkFactor = (progress - 0.45) * 0.22;
-            targetScale = 1.05 - shrinkFactor;
-          } else {
-            if (featuredState.targetScale > 1.0) {
-              featuredState.currentScale += (featuredState.targetScale - featuredState.currentScale) * fastLerp;
-              if (Math.abs(featuredState.currentScale - featuredState.targetScale) < 0.005) {
-                featuredState.targetScale = 1.0;
-              }
-              targetScale = featuredState.currentScale;
-            } else {
-              targetScale = 1.0;
+        let targetScale = 1.0;
+        if (progress > 0.45) {
+          const shrinkFactor = (progress - 0.45) * 0.22;
+          targetScale = 1.05 - shrinkFactor;
+        } else {
+          if (featuredState.targetScale > 1.0) {
+            featuredState.currentScale += (featuredState.targetScale - featuredState.currentScale) * fastLerp;
+            if (Math.abs(featuredState.currentScale - featuredState.targetScale) < 0.005) {
+              featuredState.targetScale = 1.0;
             }
+            targetScale = featuredState.currentScale;
+          } else {
+            targetScale = 1.0;
           }
-
-          // Snappy LERP calculations (fast timing)
-          featuredState.currentScale += (targetScale - featuredState.currentScale) * fastLerp;
-          featuredState.currentOpacity += (featuredState.targetOpacity - featuredState.currentOpacity) * fastLerp;
-
-          featuredCard.style.transform = `scale(${featuredState.currentScale})`;
-          featuredCard.style.opacity = featuredState.currentOpacity;
         }
+
+        // Snappy LERP calculations (fast timing)
+        featuredState.currentScale += (targetScale - featuredState.currentScale) * fastLerp;
+        featuredState.currentOpacity += (featuredState.targetOpacity - featuredState.currentOpacity) * fastLerp;
+
+        featuredCard.style.transform = `scale(${featuredState.currentScale})`;
+        featuredCard.style.opacity = featuredState.currentOpacity;
       }
 
-      // 2. Standard Multi-directional Slide Reveals (FAST timing)
+      // 2. Standard Multi-directional Slide Reveals (FAST LERP)
       revealElements.forEach(item => {
-        const rect = item.element.getBoundingClientRect();
-        
-        if (rect.top < triggerBottom && rect.bottom > 0) {
-          if (!item.revealed) {
-            item.revealed = true;
-            item.targetOpacity = 1;
-            item.targetX = 0;
-            item.targetY = 0;
-
-            const velocityFactor = Math.min(3.5, scrollVelocity);
-            
-            if (velocityFactor > 0.8) {
-              item.targetScale = 1.0 + (velocityFactor * 0.05); 
-              const speedMultiplier = 1.0 + (velocityFactor * 0.4);
-              item.currentX = item.startX * speedMultiplier;
-              item.currentY = item.startY * speedMultiplier;
-              item.currentScale = 0.88 - (velocityFactor * 0.06); 
-            } else {
-              item.targetScale = 1.0;
-            }
-          }
-        }
-
         if (item.revealed) {
           item.currentX += (item.targetX - item.currentX) * fastLerp;
           item.currentY += (item.targetY - item.currentY) * fastLerp;
@@ -1858,18 +1877,8 @@
         }
       });
 
-      // 3. Custom Blur Reveal Blocks (FAST timing)
+      // 3. Custom Blur Reveal Blocks (FAST LERP)
       blurRevealElements.forEach(item => {
-        const rect = item.element.getBoundingClientRect();
-        
-        if (rect.top < triggerBottom && rect.bottom > 0) {
-          if (!item.revealed) {
-            item.revealed = true;
-            item.targetOpacity = 1;
-            item.targetBlur = 0;
-          }
-        }
-
         if (item.revealed) {
           item.currentBlur += (item.targetBlur - item.currentBlur) * fastLerp;
           item.currentOpacity += (item.targetOpacity - item.currentOpacity) * fastLerp;
@@ -1878,22 +1887,6 @@
           item.element.style.opacity = item.currentOpacity;
         }
       });
-
-      // 4. Word Typing Reveal for the About Paragraph (FAST timing)
-      if (aboutP) {
-        const paragraphRect = aboutP.getBoundingClientRect();
-        if (paragraphRect.top < triggerBottom && paragraphRect.bottom > 0) {
-          if (!aboutP.classList.contains('revealed')) {
-            aboutP.classList.add('revealed');
-            const words = aboutP.querySelectorAll('.reveal-word');
-            words.forEach((word, idx) => {
-              setTimeout(() => {
-                word.classList.add('visible');
-              }, idx * 18); // Staggering delay per word (fast typing)
-            });
-          }
-        }
-      }
     }
 
     // Animation Loop
