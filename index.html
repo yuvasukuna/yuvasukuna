@@ -384,11 +384,18 @@
       gap: 48px;
       align-items: center;
       box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-      transition: border-color 0.4s ease;
       margin-bottom: 60px;
       opacity: 0;
       transform: scale(0.72);
+      transition: border-color 0.4s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: transform, opacity;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .project-card.revealed {
+      opacity: 1 !important;
+      transform: scale(1) !important;
     }
 
     .project-card:hover {
@@ -770,7 +777,28 @@
     /* Scroll Reveal - Starts Hidden */
     .scroll-reveal {
       opacity: 0;
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: transform, opacity;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .scroll-reveal[data-reveal-dir="left"] {
+      transform: translate3d(-40px, 0, 0) scale(0.95);
+    }
+    .scroll-reveal[data-reveal-dir="right"] {
+      transform: translate3d(40px, 0, 0) scale(0.95);
+    }
+    .scroll-reveal[data-reveal-dir="up"] {
+      transform: translate3d(0, 40px, 0) scale(0.95);
+    }
+    .scroll-reveal[data-reveal-dir="down"] {
+      transform: translate3d(0, -40px, 0) scale(0.95);
+    }
+
+    .scroll-reveal.revealed {
+      opacity: 1 !important;
+      transform: translate3d(0, 0, 0) scale(1) !important;
     }
 
     /* About Section Specific Typing/Blur Reveal Spans */
@@ -800,7 +828,15 @@
     .scroll-reveal-blur {
       opacity: 0;
       filter: blur(20px);
+      transition: filter 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: filter, opacity;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .scroll-reveal-blur.revealed {
+      opacity: 1 !important;
+      filter: blur(0px) !important;
     }
 
     /* ----------------------------------------------------
@@ -812,18 +848,18 @@
       }
 
       header {
-        padding: 12px 16px;
+        padding: 10px 12px;
       }
       
       nav a {
-        margin-left: 10px;
-        font-size: 15px; /* Bigger nav links on mobile */
+        margin-left: 4px;
+        font-size: 13px; /* Refined smaller nav links on mobile */
         letter-spacing: 0.1px;
-        padding: 6px 14px;
+        padding: 5px 12px;
       }
       
       .nav-indicator {
-        height: 32px;
+        height: 28px;
       }
       
       section {
@@ -836,29 +872,29 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        padding-top: 130px; /* Push the branding title down from the top menu */
-        padding-bottom: 50px;
+        padding-top: 100px; /* Reduced to avoid pushing stats down on short screens */
+        padding-bottom: 40px;
       }
 
       #work {
-        padding-top: 20px; /* Pull Selected Work closer to hero */
+        padding-top: 10px; /* Pull Selected Work closer to hero */
       }
       
       .brand-title {
-        font-size: clamp(40px, 15vw, 68px); /* Still bigger branding title to fill the space */
+        font-size: clamp(34px, 12vw, 56px); /* More compact branding title */
         letter-spacing: -2px;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
       }
       
       .headline {
-        font-size: clamp(16px, 4vw, 20px);
+        font-size: clamp(14px, 3.8vw, 18px);
         line-height: 1.25;
         margin-bottom: 8px;
       }
       
       .subline {
-        font-size: 12px;
-        margin-bottom: 20px;
+        font-size: 11px;
+        margin-bottom: 16px;
         line-height: 1.4;
       }
       
@@ -908,7 +944,6 @@
         line-height: 1.3;
       }
       
-      /* Side-by-side Layout for Featured Project Card */
       .project-card {
         display: grid;
         grid-template-columns: 1.1fr 0.9fr; /* Video beside details horizontally */
@@ -916,6 +951,11 @@
         padding: 16px;
         border-radius: 16px;
         align-items: center;
+        transform: scale(0.85);
+      }
+      
+      .project-card.revealed {
+        transform: scale(1) !important;
       }
       
       .project-card .project-meta {
@@ -1071,7 +1111,7 @@
     @media (max-width: 480px) {
       header {
         justify-content: center; /* Center-align header nav on very tiny screens */
-        padding: 10px 12px;
+        padding: 8px 10px;
       }
       
       .brand-nav {
@@ -1079,27 +1119,27 @@
       }
       
       nav a {
-        margin: 0 3px;
-        font-size: 13px; /* Bigger nav links on very tiny screens */
-        padding: 4px 10px;
+        margin: 0 2px;
+        font-size: 11.5px; /* Refined smaller nav links on mobile */
+        padding: 4px 8px;
       }
       
       .glass-shapes-row {
-        gap: 8px;
+        gap: 6px;
       }
       
       .glass-shape {
-        padding: 8px 12px;
-        font-size: 10px;
+        padding: 6px 10px;
+        font-size: 9.5px;
       }
       
       .contact-buttons {
-        gap: 8px;
+        gap: 6px;
       }
 
       .pill-btn {
-        padding: 10px 14px;
-        font-size: 12px;
+        padding: 8px 12px;
+        font-size: 11px;
       }
     }
 
@@ -1397,18 +1437,7 @@
     let scrollVelocity = 0;
 
     // Cache elements offset positions to eliminate layout thrashing inside 60fps loops
-    let featuredCardTop = 0;
-    let featuredCardHeight = 0;
     let sectionOffsets = {};
-
-    function cacheLayoutOffsets() {
-      const featuredCard = document.querySelector('.project-card');
-      if (featuredCard) {
-        const rect = featuredCard.getBoundingClientRect();
-        featuredCardTop = rect.top + window.pageYOffset;
-        featuredCardHeight = rect.height;
-      }
-    }
 
     function cacheSectionOffsets() {
       ['hero', 'work', 'about', 'contact'].forEach(id => {
@@ -1427,7 +1456,6 @@
     resize();
     
     // Call layout caches immediately after first resize
-    cacheLayoutOffsets();
     cacheSectionOffsets();
     
     // Width-only responsive resize listener (fixes mobile browser resize glitches on scroll)
@@ -1439,7 +1467,6 @@
         // Update mouse interaction radius dynamically based on layout sizing
         mouse.radius = window.innerWidth < 768 ? 60 : 120;
         // Re-cache offsets when viewport dimensions change
-        cacheLayoutOffsets();
         cacheSectionOffsets();
       }
     });
@@ -1541,7 +1568,7 @@
     window.addEventListener('touchend', clearMousePos);
     window.addEventListener('touchcancel', clearMousePos);
 
-    const PARTICLE_COUNT = window.innerWidth < 768 ? 45 : 150;
+    const PARTICLE_COUNT = window.innerWidth < 768 ? 20 : 150;
     const particles = [];
     const shootingStars = [];
     const burstParticles = [];
@@ -1717,8 +1744,13 @@
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${this.color[0]}, ${this.color[1]}, ${this.color[2]}, ${this.opacity})`;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = `rgba(${this.color[0]}, ${this.color[1]}, ${this.color[2]}, 0.5)`;
+        
+        // Disable canvas shadows on mobile to prevent extreme battery drain and lag
+        if (window.innerWidth >= 768) {
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = `rgba(${this.color[0]}, ${this.color[1]}, ${this.color[2]}, 0.5)`;
+        }
+        
         ctx.fill();
         ctx.shadowBlur = 0;
       }
@@ -1858,7 +1890,6 @@
       }
 
       // Re-cache offsets once the scroll position is safely reset to the top
-      cacheLayoutOffsets();
       cacheSectionOffsets();
 
       const activeNav = document.querySelector('nav a.active');
@@ -1920,69 +1951,8 @@
     }
 
     // ----------------------------------------------------
-    // HIGH-PERFORMANCE PHYSICAL SPRING SCROLL REVEAL SYSTEM
+    // HIGH-PERFORMANCE CSS SCROLL REVEAL TRIGGER SYSTEM
     // ----------------------------------------------------
-    const revealElements = [];
-    document.querySelectorAll('.scroll-reveal').forEach(el => {
-      const dir = el.getAttribute('data-reveal-dir') || 'up';
-      let startX = 0;
-      let startY = 0;
-      const baseDistance = window.innerWidth < 768 ? 40 : 140; 
-
-      if (dir === 'left') startX = -baseDistance;
-      else if (dir === 'right') startX = baseDistance;
-      else if (dir === 'up') startY = baseDistance;
-      else if (dir === 'down') startY = -baseDistance;
-
-      const state = {
-        element: el,
-        direction: dir,
-        revealed: false,
-        startX: startX,
-        startY: startY,
-        currentX: startX,
-        targetX: startX,
-        currentY: startY,
-        targetY: startY,
-        currentScale: 0.92,
-        targetScale: 0.92,
-        currentOpacity: 0,
-        targetOpacity: 0
-      };
-      revealElements.push(state);
-      el.stateRef = state;
-    });
-
-    const blurRevealElements = [];
-    document.querySelectorAll('.scroll-reveal-blur').forEach(el => {
-      const state = {
-        element: el,
-        revealed: false,
-        currentBlur: 20,
-        targetBlur: 20,
-        currentOpacity: 0,
-        targetOpacity: 0
-      };
-      blurRevealElements.push(state);
-      el.stateRef = state;
-    });
-
-    // Separate state tracking for the Featured Project Card (Scale Pop & Parallax Zoom Out)
-    const featuredCard = document.querySelector('.project-card');
-    const initialFeaturedScale = window.innerWidth < 768 ? 0.85 : 0.72;
-    const featuredState = {
-      element: featuredCard,
-      revealed: false,
-      currentScale: initialFeaturedScale,
-      targetScale: initialFeaturedScale,
-      currentOpacity: 0,
-      targetOpacity: 0
-    };
-    if (featuredCard) {
-      featuredCard.stateRef = featuredState;
-    }
-
-    // IntersectionObserver scroll reveal system to eliminate 60fps layout thrashing
     const observerOptions = {
       root: null,
       rootMargin: '0px 0px -8% 0px',
@@ -1993,23 +1963,18 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const el = entry.target;
-          if (el.stateRef) {
-            el.stateRef.revealed = true;
-            if (el.stateRef.targetOpacity !== undefined) el.stateRef.targetOpacity = 1;
-            if (el.stateRef.targetX !== undefined) el.stateRef.targetX = 0;
-            if (el.stateRef.targetY !== undefined) el.stateRef.targetY = 0;
-            if (el.stateRef.targetBlur !== undefined) el.stateRef.targetBlur = 0;
-            if (el.id === 'about') {
-              const aboutP = document.querySelector('.about-paragraph');
-              if (aboutP && !aboutP.classList.contains('revealed')) {
-                aboutP.classList.add('revealed');
-                const words = aboutP.querySelectorAll('.reveal-word');
-                words.forEach((word, idx) => {
-                  setTimeout(() => {
-                    word.classList.add('visible');
-                  }, idx * 18);
-                });
-              }
+          el.classList.add('revealed');
+          
+          if (el.id === 'about') {
+            const aboutP = document.querySelector('.about-paragraph');
+            if (aboutP && !aboutP.classList.contains('revealed')) {
+              aboutP.classList.add('revealed');
+              const words = aboutP.querySelectorAll('.reveal-word');
+              words.forEach((word, idx) => {
+                setTimeout(() => {
+                  word.classList.add('visible');
+                }, idx * 18);
+              });
             }
           }
           observer.unobserve(el);
@@ -2017,102 +1982,14 @@
       });
     }, observerOptions);
 
-    revealElements.forEach(item => revealObserver.observe(item.element));
-    blurRevealElements.forEach(item => revealObserver.observe(item.element));
-    if (featuredCard) revealObserver.observe(featuredCard);
-    
+    // Observe all scroll reveal and project card elements
+    document.querySelectorAll('.scroll-reveal, .scroll-reveal-blur, .project-card').forEach(el => {
+      revealObserver.observe(el);
+    });
+
     const aboutSection = document.getElementById('about');
     if (aboutSection) {
-      aboutSection.stateRef = { revealed: false };
       revealObserver.observe(aboutSection);
-    }
-
-    const fastLerp = 0.12;
-
-    function updateScrollReveal() {
-      // 1. Featured Project Card Reveal (Scale Pop + Parallax Zoom-out offscreen)
-      if (featuredCard && featuredState.revealed) {
-        const relativeTop = featuredCardTop - scrollY;
-        const viewHeight = window.innerHeight;
-        let progress = (viewHeight - relativeTop) / (viewHeight + featuredCardHeight);
-        progress = Math.max(0, Math.min(1, progress));
-        
-        let targetScale = 1.0;
-        if (progress > 0.45) {
-          const shrinkFactor = (progress - 0.45) * 0.22;
-          targetScale = 1.05 - shrinkFactor;
-        } else {
-          if (featuredState.targetScale > 1.0) {
-            featuredState.currentScale += (featuredState.targetScale - featuredState.currentScale) * fastLerp;
-            if (Math.abs(featuredState.currentScale - featuredState.targetScale) < 0.005) {
-              featuredState.targetScale = 1.0;
-            }
-            targetScale = featuredState.currentScale;
-          } else {
-            targetScale = 1.0;
-          }
-        }
-
-        // Snappy LERP calculations (fast timing)
-        featuredState.currentScale += (targetScale - featuredState.currentScale) * fastLerp;
-        featuredState.currentOpacity += (featuredState.targetOpacity - featuredState.currentOpacity) * fastLerp;
-
-        featuredCard.style.transform = `scale(${featuredState.currentScale})`;
-        featuredCard.style.opacity = featuredState.currentOpacity;
-      }
-
-      // 2. Standard Multi-directional Slide Reveals (FAST LERP)
-      revealElements.forEach(item => {
-        if (item.revealed && !item.completed) {
-          item.currentX += (item.targetX - item.currentX) * fastLerp;
-          item.currentY += (item.targetY - item.currentY) * fastLerp;
-          item.currentOpacity += (item.targetOpacity - item.currentOpacity) * fastLerp;
-
-          if (item.targetScale > 1.0) {
-            item.currentScale += (item.targetScale - item.currentScale) * fastLerp;
-            if (Math.abs(item.currentScale - item.targetScale) < 0.004) {
-              item.targetScale = 1.0;
-            }
-          } else {
-            item.currentScale += (item.targetScale - item.currentScale) * fastLerp;
-          }
-
-          // Check if animation has converged to target
-          const diffX = Math.abs(item.targetX - item.currentX);
-          const diffY = Math.abs(item.targetY - item.currentY);
-          const diffOpacity = Math.abs(item.targetOpacity - item.currentOpacity);
-          const diffScale = Math.abs(item.targetScale - item.currentScale);
-
-          if (diffX < 0.05 && diffY < 0.05 && diffOpacity < 0.005 && diffScale < 0.005) {
-            item.element.style.transform = 'none'; // Remove transform overlay to prevent GPU layout ghosts/duplicates in Webview
-            item.element.style.opacity = '1';
-            item.completed = true;
-          } else {
-            item.element.style.transform = `translate(${item.currentX}px, ${item.currentY}px) scale(${item.currentScale})`;
-            item.element.style.opacity = item.currentOpacity;
-          }
-        }
-      });
-
-      // 3. Custom Blur Reveal Blocks (FAST LERP)
-      blurRevealElements.forEach(item => {
-        if (item.revealed && !item.completed) {
-          item.currentBlur += (item.targetBlur - item.currentBlur) * fastLerp;
-          item.currentOpacity += (item.targetOpacity - item.currentOpacity) * fastLerp;
-
-          const diffBlur = Math.abs(item.targetBlur - item.currentBlur);
-          const diffOpacity = Math.abs(item.targetOpacity - item.currentOpacity);
-
-          if (diffBlur < 0.1 && diffOpacity < 0.005) {
-            item.element.style.filter = 'none'; // Remove filter overlay
-            item.element.style.opacity = '1';
-            item.completed = true;
-          } else {
-            item.element.style.filter = `blur(${item.currentBlur}px)`;
-            item.element.style.opacity = item.currentOpacity;
-          }
-        }
-      });
     }
 
     // Animation Loop
@@ -2122,9 +1999,6 @@
       drawConnections();
       
       particles.forEach(p => { p.update(); p.draw(); });
-      
-      // Update scroll reveals using multi-directional physics
-      updateScrollReveal();
       
       // Slowly decay scroll velocity
       scrollVelocity *= 0.95;
