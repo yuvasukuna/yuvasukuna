@@ -64,7 +64,7 @@
       pointer-events: auto; /* Enable mouse interactions */
     }
 
-    /* Radial blur ambient orbs reacting to scroll */
+    /* Radial blur orbs reacting to scroll */
     .orb {
       position: absolute;
       border-radius: 50%;
@@ -102,7 +102,7 @@
       transform: translateY(calc(var(--scroll) * -0.08px));
     }
 
-    /* Navigation */
+    /* Navigation - Restored left brand logo text as "YuvaSukuna" (no spans/colors) */
     header {
       position: fixed;
       top: 0;
@@ -127,12 +127,11 @@
       color: var(--text-main);
       text-transform: uppercase;
       text-decoration: none;
+      transition: opacity 0.3s ease;
     }
 
-    .brand-nav span {
-      background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .brand-nav:hover {
+      opacity: 0.85;
     }
 
     nav a {
@@ -334,7 +333,7 @@
       transform: scale(1.015);
     }
 
-    /* Satisfying custom HTML5 play button overlay */
+    /* Custom play button overlay */
     .play-btn-overlay {
       position: absolute;
       inset: 0;
@@ -361,7 +360,7 @@
       transform: scale(1.12);
     }
 
-    /* Selected Work Panel (Featured) */
+    /* Selected Work Panel (Featured) - Scale Pop & Zoom Parallax */
     .project-card {
       background: var(--card-bg);
       backdrop-filter: blur(20px);
@@ -376,6 +375,9 @@
       box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
       transition: border-color 0.4s ease;
       margin-bottom: 60px;
+      opacity: 0;
+      transform: scale(0.72);
+      will-change: transform, opacity;
     }
 
     .project-card:hover {
@@ -462,7 +464,7 @@
       text-decoration: underline;
     }
 
-    /* Works Grid (All videos library) */
+    /* Works Grid */
     .work-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -477,13 +479,11 @@
       border-radius: 20px;
       overflow: hidden;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      transition: all 0.4s ease;
+      transition: border-color 0.4s ease;
     }
 
     .grid-project-card:hover {
       border-color: rgba(124, 58, 237, 0.25);
-      transform: translateY(-5px);
-      box-shadow: 0 30px 50px rgba(124, 58, 237, 0.08);
     }
 
     .project-info-box {
@@ -503,7 +503,7 @@
       margin-bottom: 16px;
     }
 
-    /* About Section Grid */
+    /* About Section Grid Layout */
     .info-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -687,7 +687,7 @@
       100% { transform: scale(2.6); opacity: 0; }
     }
 
-    /* Large elegant mixed-case headline */
+    /* Large headline */
     .contact-headline {
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro", sans-serif;
       font-size: clamp(34px, 6vw, 56px);
@@ -756,6 +756,42 @@
       transform: translateY(-1px);
     }
 
+    /* Scroll Reveal - Starts Hidden */
+    .scroll-reveal {
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    /* About Section Specific Typing/Blur Reveal Spans */
+    .about-paragraph {
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--text-main);
+      font-weight: 300;
+    }
+
+    .reveal-word {
+      opacity: 0;
+      filter: blur(12px);
+      display: inline-block;
+      white-space: pre-wrap;
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                  filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: filter, opacity;
+    }
+
+    .reveal-word.visible {
+      opacity: 1;
+      filter: blur(0px);
+    }
+
+    /* Scroll Reveal Blur (No slide motion) */
+    .scroll-reveal-blur {
+      opacity: 0;
+      filter: blur(20px);
+      will-change: filter, opacity;
+    }
+
     /* Footer */
     footer {
       padding: 48px 0;
@@ -776,9 +812,9 @@
     <canvas id="c"></canvas>
   </div>
 
-  <!-- Header Nav -->
+  <!-- Navigation header with restored clean brand logo "YuvaSukuna" (pure white text) -->
   <header>
-    <a href="#hero" class="brand-nav">Yuva<span>Sukuna</span></a>
+    <a href="#hero" class="brand-nav">YuvaSukuna</a>
     <nav>
       <a href="#hero" class="active">Home</a>
       <a href="#work">Work</a>
@@ -792,6 +828,7 @@
     <!-- Hero Section -->
     <section id="hero">
       <div class="hero-center">
+        <!-- Big Brand Title remains strictly centered here -->
         <div class="brand-title"><span>YuvaSukuna</span></div>
         <h1 class="headline">I create demos that sell.</h1>
         <p class="subline">Motion design for SaaS founders who want their product to speak for itself.</p>
@@ -829,7 +866,7 @@
 
     <!-- Work Section -->
     <section id="work">
-      <h2 class="section-title">Selected Work</h2>
+      <h2 class="section-title scroll-reveal" data-reveal-dir="left">Selected Work</h2>
       
       <!-- Featured Project: AI Content Studio -->
       <div class="project-card">
@@ -867,11 +904,11 @@
       </div>
 
       <!-- Video Grid library of all work -->
-      <h2 class="section-title" style="margin-top: 40px; margin-bottom: 24px; font-size: 22px;">More Motion Demos</h2>
+      <h2 class="section-title scroll-reveal" data-reveal-dir="up" style="margin-top: 40px; margin-bottom: 24px; font-size: 22px;">More demo works</h2>
       
       <div class="work-grid">
         <!-- Revolt Final -->
-        <div class="grid-project-card">
+        <div class="grid-project-card scroll-reveal" data-reveal-dir="up">
           <div class="video-wrapper">
             <video src="PORTFOLIO/REVOLT_FINAL.mp4" loop muted playsinline></video>
             <div class="play-btn-overlay">
@@ -891,7 +928,7 @@
         </div>
 
         <!-- FlowIQ Final -->
-        <div class="grid-project-card">
+        <div class="grid-project-card scroll-reveal" data-reveal-dir="up">
           <div class="video-wrapper">
             <video src="PORTFOLIO/YUVASUKUNA(FLOWIQ)FINAL.mp4" loop muted playsinline></video>
             <div class="play-btn-overlay">
@@ -911,7 +948,7 @@
         </div>
 
         <!-- Showreel/Op -->
-        <div class="grid-project-card">
+        <div class="grid-project-card scroll-reveal" data-reveal-dir="up">
           <div class="video-wrapper">
             <video src="PORTFOLIO/op.mp4" loop muted playsinline></video>
             <div class="play-btn-overlay">
@@ -931,7 +968,7 @@
         </div>
 
         <!-- Concept 08 -->
-        <div class="grid-project-card">
+        <div class="grid-project-card scroll-reveal" data-reveal-dir="up">
           <div class="video-wrapper">
             <video src="PORTFOLIO/USER340129{08}.mp4" loop muted playsinline></video>
             <div class="play-btn-overlay">
@@ -951,7 +988,7 @@
         </div>
 
         <!-- Concept 09 -->
-        <div class="grid-project-card">
+        <div class="grid-project-card scroll-reveal" data-reveal-dir="up">
           <div class="video-wrapper">
             <video src="PORTFOLIO/USER340129{09}.mp4" loop muted playsinline></video>
             <div class="play-btn-overlay">
@@ -974,17 +1011,17 @@
 
     <!-- About Section -->
     <section id="about">
-      <h2 class="section-title">About & Services</h2>
+      <h2 class="section-title scroll-reveal" data-reveal-dir="left">About & Services</h2>
       
       <div style="margin-bottom: 56px; max-width: 850px;">
-        <p style="font-size: 18px; line-height: 1.8; color: var(--text-main); font-weight: 300;">
+        <p class="about-paragraph">
           I'm Yuvaraj, a freelance SaaS explainer motion designer. I build custom UI animations frame by frame in After Effects — every shape, every transition, crafted by hand. I'm early in my journey but obsessed with the craft.
         </p>
       </div>
 
       <div class="info-grid">
         <!-- Skills -->
-        <div class="info-block">
+        <div class="info-block scroll-reveal-blur">
           <h3>Skills & Tools</h3>
           <div class="skills-list">
             <div class="skill-row">
@@ -1007,7 +1044,7 @@
         </div>
 
         <!-- Services -->
-        <div class="info-block">
+        <div class="info-block scroll-reveal-blur">
           <h3>What I Offer</h3>
           <div class="services-list">
             <div class="service-card">
@@ -1029,7 +1066,7 @@
 
     <!-- Contact Section -->
     <section id="contact">
-      <div class="cta-container">
+      <div class="cta-container scroll-reveal" data-reveal-dir="up">
         
         <!-- Decorative Frosted Glass Overlaps Behind Headline -->
         <div class="cta-backdrop">
@@ -1051,7 +1088,7 @@
         <!-- Side-by-Side Glass Pill Buttons -->
         <div class="contact-buttons">
           <a href="mailto:yuvasukuna09@gmail.com" class="pill-btn">Send an email</a>
-          <a href="https://instagram.com/yuva.sukuna" target="_blank" rel="noopener" class="pill-btn">Instagram</a>
+          <a href="https://instagram.com/yuvasukuna" target="_blank" rel="noopener" class="pill-btn">Instagram</a>
         </div>
 
       </div>
@@ -1070,6 +1107,11 @@
     let W, H;
     let scrollY = 0;
 
+    // Track scroll velocity
+    let lastScrollY = 0;
+    let lastScrollTime = Date.now();
+    let scrollVelocity = 0;
+
     function resize() {
       const wrap = canvas.parentElement;
       W = canvas.width = wrap.offsetWidth;
@@ -1078,10 +1120,18 @@
     resize();
     window.addEventListener('resize', resize);
 
-    // Track scroll position
+    // Track scroll position & velocity
     window.addEventListener('scroll', () => {
       scrollY = window.scrollY;
       document.documentElement.style.setProperty('--scroll', scrollY);
+
+      const currentTime = Date.now();
+      const dt = currentTime - lastScrollTime;
+      if (dt > 0) {
+        scrollVelocity = Math.abs(scrollY - lastScrollY) / dt;
+      }
+      lastScrollY = scrollY;
+      lastScrollTime = currentTime;
       
       // Update active nav link
       const sections = ['hero', 'work', 'about', 'contact'];
@@ -1117,7 +1167,7 @@
     const PARTICLE_COUNT = 150;
     const particles = [];
     const shootingStars = [];
-    const burstParticles = []; // Burst particles triggered by click
+    const burstParticles = [];
 
     class Particle {
       constructor() {
@@ -1128,14 +1178,13 @@
         this.x = Math.random() * W;
         this.y = randomY ? Math.random() * H : -10;
         
-        // Some stars are big ambient blurry dust particles, others are sharp twinkles
         const type = Math.random();
         if (type < 0.2) {
-          this.r = Math.random() * 6.5 + 4.5; // Big ambient particles
+          this.r = Math.random() * 6.5 + 4.5;
           this.isBlur = true;
-          this.base = Math.random() * 0.18 + 0.05; // lower opacity for big blur particles
+          this.base = Math.random() * 0.18 + 0.05;
         } else {
-          this.r = Math.random() * 3.2 + 1.2; // Much bigger sharp particles
+          this.r = Math.random() * 3.2 + 1.2;
           this.isBlur = false;
           this.base = Math.random() * 0.45 + 0.15;
         }
@@ -1151,10 +1200,10 @@
         this.twinkleDir = Math.random() > 0.5 ? 1 : -1;
         
         const t = Math.random();
-        if (t < 0.4) this.hue = [124, 58, 237];      // violet/purple
-        else if (t < 0.7) this.hue = [236, 72, 153];  // pink
-        else if (t < 0.85) this.hue = [6, 182, 212];  // cyan
-        else this.hue = [255, 255, 255];              // white
+        if (t < 0.4) this.hue = [124, 58, 237];
+        else if (t < 0.7) this.hue = [236, 72, 153];
+        else if (t < 0.85) this.hue = [6, 182, 212];
+        else this.hue = [255, 255, 255];
       }
 
       getRenderCoords() {
@@ -1179,7 +1228,6 @@
 
         const coords = this.getRenderCoords();
 
-        // Mouse Evasion
         if (mouse.x !== null && mouse.y !== null) {
           const dx = coords.x - mouse.x;
           const dy = coords.y - mouse.y;
@@ -1195,7 +1243,6 @@
           }
         }
 
-        // Dampen offset
         this.offsetX *= 0.94;
         this.offsetY *= 0.94;
 
@@ -1211,7 +1258,6 @@
         ctx.arc(x, y, this.r, 0, Math.PI * 2);
         
         if (this.isBlur) {
-          // Large glowing soft particle
           const g = ctx.createRadialGradient(x, y, 0, x, y, this.r);
           g.addColorStop(0, `rgba(${this.hue[0]},${this.hue[1]},${this.hue[2]},${Math.max(0.01, this.opacity)})`);
           g.addColorStop(1, `rgba(${this.hue[0]},${this.hue[1]},${this.hue[2]},0)`);
@@ -1362,7 +1408,6 @@
 
     // Register canvas clicks for smaller bursts
     canvas.addEventListener('click', (e) => {
-      // Don't trigger if clicking on interactive buttons or cards
       if (e.target !== canvas) return;
       
       const rect = canvas.getBoundingClientRect();
@@ -1374,26 +1419,23 @@
       }
     });
 
-    // Hover to Play / Click to Activate Controls & Unmute Video Logic
+    // Hover to Play / Click to Activate Video Logic
     document.querySelectorAll('.video-wrapper').forEach(wrapper => {
       const video = wrapper.querySelector('video');
       const overlay = wrapper.querySelector('.play-btn-overlay');
 
-      // Play muted video on hover
       wrapper.addEventListener('mouseenter', () => {
         if (!video.classList.contains('user-activated')) {
           video.play().catch(err => {});
         }
       });
 
-      // Pause video on leave if the user hasn't unmuted it yet
       wrapper.addEventListener('mouseleave', () => {
         if (!video.classList.contains('user-activated')) {
           video.pause();
         }
       });
 
-      // Click video wrapper to activate audio and display native timeline controls
       wrapper.addEventListener('click', () => {
         if (!video.classList.contains('user-activated')) {
           video.classList.add('user-activated');
@@ -1407,6 +1449,204 @@
       });
     });
 
+    // ----------------------------------------------------
+    // PRE-PROCESSING: ABOUT PARAGRAPH TYPING REVEAL SETUP
+    // ----------------------------------------------------
+    const aboutP = document.querySelector('.about-paragraph');
+    if (aboutP) {
+      const words = aboutP.innerText.split(' ');
+      aboutP.innerHTML = words.map(w => `<span class="reveal-word">${w}</span>`).join(' ');
+    }
+
+    // ----------------------------------------------------
+    // HIGH-PERFORMANCE PHYSICAL SPRING SCROLL REVEAL SYSTEM
+    // ----------------------------------------------------
+    const revealElements = [];
+    document.querySelectorAll('.scroll-reveal').forEach(el => {
+      const dir = el.getAttribute('data-reveal-dir') || 'up';
+      let startX = 0;
+      let startY = 0;
+      const baseDistance = 140; 
+
+      if (dir === 'left') startX = -baseDistance;
+      else if (dir === 'right') startX = baseDistance;
+      else if (dir === 'up') startY = baseDistance;
+      else if (dir === 'down') startY = -baseDistance;
+
+      revealElements.push({
+        element: el,
+        direction: dir,
+        revealed: false,
+        startX: startX,
+        startY: startY,
+        currentX: startX,
+        targetX: startX,
+        currentY: startY,
+        targetY: startY,
+        currentScale: 0.92,
+        targetScale: 0.92,
+        currentOpacity: 0,
+        targetOpacity: 0
+      });
+    });
+
+    const blurRevealElements = [];
+    document.querySelectorAll('.scroll-reveal-blur').forEach(el => {
+      blurRevealElements.push({
+        element: el,
+        revealed: false,
+        currentBlur: 20,
+        targetBlur: 20,
+        currentOpacity: 0,
+        targetOpacity: 0
+      });
+    });
+
+    // Separate state tracking for the Featured Project Card (Scale Pop & Parallax Zoom Out)
+    const featuredCard = document.querySelector('.project-card');
+    const featuredState = {
+      element: featuredCard,
+      revealed: false,
+      currentScale: 0.72,
+      targetScale: 0.72,
+      currentOpacity: 0,
+      targetOpacity: 0
+    };
+
+    // TIMING SPEED FACTOR: FAST / SNAPPY LERP COEFFICIENTS (0.12)
+    const fastLerp = 0.12;
+
+    function updateScrollReveal() {
+      const triggerBottom = window.innerHeight * 0.92;
+
+      // 1. Featured Project Card Reveal (Scale Pop + Parallax Zoom-out offscreen)
+      if (featuredCard) {
+        const rect = featuredCard.getBoundingClientRect();
+        
+        // Triggers reveal
+        if (rect.top < triggerBottom && rect.bottom > 0) {
+          if (!featuredState.revealed) {
+            featuredState.revealed = true;
+            featuredState.targetOpacity = 1;
+            featuredState.targetScale = 1.05; // POP slightly larger initially (scale pop effect)
+          }
+        }
+
+        if (featuredState.revealed) {
+          // Dynamic Parallax Zoom Out: as the card scrolls up past center, make it shrink/zoom out
+          const viewHeight = window.innerHeight;
+          let progress = (viewHeight - rect.top) / (viewHeight + rect.height);
+          progress = Math.max(0, Math.min(1, progress));
+          
+          let targetScale = 1.0;
+          if (progress > 0.45) {
+            // Shrinks gradually from 1.0 down to 0.88 as it moves out of viewport top (zoom-out parallax)
+            const shrinkFactor = (progress - 0.45) * 0.22;
+            targetScale = 1.05 - shrinkFactor;
+          } else {
+            // Handle initial snappy settlement from scale-pop (1.05) back down to normal (1.0)
+            if (featuredState.targetScale > 1.0) {
+              featuredState.currentScale += (featuredState.targetScale - featuredState.currentScale) * fastLerp;
+              if (Math.abs(featuredState.currentScale - featuredState.targetScale) < 0.005) {
+                featuredState.targetScale = 1.0;
+              }
+              targetScale = featuredState.currentScale;
+            } else {
+              targetScale = 1.0;
+            }
+          }
+
+          // Snappy LERP calculations (fast timing)
+          featuredState.currentScale += (targetScale - featuredState.currentScale) * fastLerp;
+          featuredState.currentOpacity += (featuredState.targetOpacity - featuredState.currentOpacity) * fastLerp;
+
+          featuredCard.style.transform = `scale(${featuredState.currentScale})`;
+          featuredCard.style.opacity = featuredState.currentOpacity;
+        }
+      }
+
+      // 2. Standard Multi-directional Slide Reveals (FAST timing)
+      revealElements.forEach(item => {
+        const rect = item.element.getBoundingClientRect();
+        
+        if (rect.top < triggerBottom && rect.bottom > 0) {
+          if (!item.revealed) {
+            item.revealed = true;
+            item.targetOpacity = 1;
+            item.targetX = 0;
+            item.targetY = 0;
+
+            const velocityFactor = Math.min(3.5, scrollVelocity);
+            
+            if (velocityFactor > 0.8) {
+              item.targetScale = 1.0 + (velocityFactor * 0.05); 
+              const speedMultiplier = 1.0 + (velocityFactor * 0.4);
+              item.currentX = item.startX * speedMultiplier;
+              item.currentY = item.startY * speedMultiplier;
+              item.currentScale = 0.88 - (velocityFactor * 0.06); 
+            } else {
+              item.targetScale = 1.0;
+            }
+          }
+        }
+
+        if (item.revealed) {
+          item.currentX += (item.targetX - item.currentX) * fastLerp;
+          item.currentY += (item.targetY - item.currentY) * fastLerp;
+          item.currentOpacity += (item.targetOpacity - item.currentOpacity) * fastLerp;
+
+          if (item.targetScale > 1.0) {
+            item.currentScale += (item.targetScale - item.currentScale) * fastLerp;
+            if (Math.abs(item.currentScale - item.targetScale) < 0.004) {
+              item.targetScale = 1.0;
+            }
+          } else {
+            item.currentScale += (item.targetScale - item.currentScale) * fastLerp;
+          }
+
+          item.element.style.transform = `translate(${item.currentX}px, ${item.currentY}px) scale(${item.currentScale})`;
+          item.element.style.opacity = item.currentOpacity;
+        }
+      });
+
+      // 3. Custom Blur Reveal Blocks (FAST timing)
+      blurRevealElements.forEach(item => {
+        const rect = item.element.getBoundingClientRect();
+        
+        if (rect.top < triggerBottom && rect.bottom > 0) {
+          if (!item.revealed) {
+            item.revealed = true;
+            item.targetOpacity = 1;
+            item.targetBlur = 0;
+          }
+        }
+
+        if (item.revealed) {
+          item.currentBlur += (item.targetBlur - item.currentBlur) * fastLerp;
+          item.currentOpacity += (item.targetOpacity - item.currentOpacity) * fastLerp;
+
+          item.element.style.filter = `blur(${item.currentBlur}px)`;
+          item.element.style.opacity = item.currentOpacity;
+        }
+      });
+
+      // 4. Word Typing Reveal for the About Paragraph (FAST timing)
+      if (aboutP) {
+        const paragraphRect = aboutP.getBoundingClientRect();
+        if (paragraphRect.top < triggerBottom && paragraphRect.bottom > 0) {
+          if (!aboutP.classList.contains('revealed')) {
+            aboutP.classList.add('revealed');
+            const words = aboutP.querySelectorAll('.reveal-word');
+            words.forEach((word, idx) => {
+              setTimeout(() => {
+                word.classList.add('visible');
+              }, idx * 18); // Staggering delay per word (fast typing)
+            });
+          }
+        }
+      }
+    }
+
     // Animation Loop
     function loop(ts) {
       ctx.clearRect(0, 0, W, H);
@@ -1415,6 +1655,13 @@
       
       particles.forEach(p => { p.update(); p.draw(); });
       
+      // Update scroll reveals using multi-directional physics
+      updateScrollReveal();
+      
+      // Slowly decay scroll velocity
+      scrollVelocity *= 0.95;
+      
+      // Update click bursts
       for (let i = burstParticles.length - 1; i >= 0; i--) {
         burstParticles[i].update();
         burstParticles[i].draw();
@@ -1423,6 +1670,7 @@
         }
       }
 
+      // Update shooting stars
       for (let i = shootingStars.length - 1; i >= 0; i--) {
         shootingStars[i].update();
         shootingStars[i].draw();
