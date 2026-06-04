@@ -2063,7 +2063,7 @@
 
       // 2. Standard Multi-directional Slide Reveals (FAST LERP)
       revealElements.forEach(item => {
-        if (item.revealed) {
+        if (item.revealed && !item.completed) {
           item.currentX += (item.targetX - item.currentX) * fastLerp;
           item.currentY += (item.targetY - item.currentY) * fastLerp;
           item.currentOpacity += (item.targetOpacity - item.currentOpacity) * fastLerp;
@@ -2077,19 +2077,40 @@
             item.currentScale += (item.targetScale - item.currentScale) * fastLerp;
           }
 
-          item.element.style.transform = `translate(${item.currentX}px, ${item.currentY}px) scale(${item.currentScale})`;
-          item.element.style.opacity = item.currentOpacity;
+          // Check if animation has converged to target
+          const diffX = Math.abs(item.targetX - item.currentX);
+          const diffY = Math.abs(item.targetY - item.currentY);
+          const diffOpacity = Math.abs(item.targetOpacity - item.currentOpacity);
+          const diffScale = Math.abs(item.targetScale - item.currentScale);
+
+          if (diffX < 0.05 && diffY < 0.05 && diffOpacity < 0.005 && diffScale < 0.005) {
+            item.element.style.transform = 'none'; // Remove transform overlay to prevent GPU layout ghosts/duplicates in Webview
+            item.element.style.opacity = '1';
+            item.completed = true;
+          } else {
+            item.element.style.transform = `translate(${item.currentX}px, ${item.currentY}px) scale(${item.currentScale})`;
+            item.element.style.opacity = item.currentOpacity;
+          }
         }
       });
 
       // 3. Custom Blur Reveal Blocks (FAST LERP)
       blurRevealElements.forEach(item => {
-        if (item.revealed) {
+        if (item.revealed && !item.completed) {
           item.currentBlur += (item.targetBlur - item.currentBlur) * fastLerp;
           item.currentOpacity += (item.targetOpacity - item.currentOpacity) * fastLerp;
 
-          item.element.style.filter = `blur(${item.currentBlur}px)`;
-          item.element.style.opacity = item.currentOpacity;
+          const diffBlur = Math.abs(item.targetBlur - item.currentBlur);
+          const diffOpacity = Math.abs(item.targetOpacity - item.currentOpacity);
+
+          if (diffBlur < 0.1 && diffOpacity < 0.005) {
+            item.element.style.filter = 'none'; // Remove filter overlay
+            item.element.style.opacity = '1';
+            item.completed = true;
+          } else {
+            item.element.style.filter = `blur(${item.currentBlur}px)`;
+            item.element.style.opacity = item.currentOpacity;
+          }
         }
       });
     }
