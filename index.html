@@ -825,9 +825,9 @@
       }
       
       .brand-title {
-        font-size: clamp(28px, 8vw, 38px); /* Refined, smaller brand title */
-        letter-spacing: -1.5px;
-        margin-bottom: 12px;
+        font-size: clamp(38px, 12vw, 54px); /* Larger branding brand title on mobile */
+        letter-spacing: -2px;
+        margin-bottom: 16px;
       }
       
       .headline {
@@ -1404,12 +1404,39 @@
     let lastScrollTime = Date.now();
     let scrollVelocity = 0;
 
+    // Cache elements offset positions to eliminate layout thrashing inside 60fps loops
+    let featuredCardTop = 0;
+    let featuredCardHeight = 0;
+    let sectionOffsets = {};
+
+    function cacheLayoutOffsets() {
+      const featuredCard = document.querySelector('.project-card');
+      if (featuredCard) {
+        const rect = featuredCard.getBoundingClientRect();
+        featuredCardTop = rect.top + window.pageYOffset;
+        featuredCardHeight = rect.height;
+      }
+    }
+
+    function cacheSectionOffsets() {
+      ['hero', 'work', 'about', 'contact'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          sectionOffsets[id] = el.offsetTop;
+        }
+      });
+    }
+
     function resize() {
       const wrap = canvas.parentElement;
       W = canvas.width = wrap.offsetWidth;
       H = canvas.height = wrap.offsetHeight;
     }
     resize();
+    
+    // Call layout caches immediately after first resize
+    cacheLayoutOffsets();
+    cacheSectionOffsets();
     
     // Width-only responsive resize listener (fixes mobile browser resize glitches on scroll)
     let lastW = window.innerWidth;
@@ -1419,6 +1446,9 @@
         resize();
         // Update mouse interaction radius dynamically based on layout sizing
         mouse.radius = window.innerWidth < 768 ? 60 : 120;
+        // Re-cache offsets when viewport dimensions change
+        cacheLayoutOffsets();
+        cacheSectionOffsets();
       }
     });
 
@@ -1436,16 +1466,12 @@
       lastScrollY = scrollY;
       lastScrollTime = currentTime;
       
-      // Update active nav link
-      const sections = ['hero', 'work', 'about', 'contact'];
+      // Update active nav link using extremely fast cached offset checks
       let current = 'hero';
-      sections.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= 200) {
-            current = id;
-          }
+      const scrollPos = scrollY + 200;
+      ['hero', 'work', 'about', 'contact'].forEach(id => {
+        if (scrollPos >= (sectionOffsets[id] || 0)) {
+          current = id;
         }
       });
       document.querySelectorAll('nav a').forEach(a => {
@@ -1933,9 +1959,9 @@
     function updateScrollReveal() {
       // 1. Featured Project Card Reveal (Scale Pop + Parallax Zoom-out offscreen)
       if (featuredCard && featuredState.revealed) {
-        const rect = featuredCard.getBoundingClientRect();
+        const relativeTop = featuredCardTop - scrollY;
         const viewHeight = window.innerHeight;
-        let progress = (viewHeight - rect.top) / (viewHeight + rect.height);
+        let progress = (viewHeight - relativeTop) / (viewHeight + featuredCardHeight);
         progress = Math.max(0, Math.min(1, progress));
         
         let targetScale = 1.0;
