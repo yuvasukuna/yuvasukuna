@@ -60,18 +60,19 @@
   }
 
   .bg-grid {
-    position: fixed;
-    inset: 0;
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 100vh;
     z-index: 0;
     pointer-events: none;
     background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
     background-size: 28px 28px;
-    mask-image: radial-gradient(circle 85% at 35% 50%, #000 40%, transparent 100%);
-    -webkit-mask-image: radial-gradient(circle 85% at 35% 50%, #000 40%, transparent 100%);
+    mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, #000 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, #000 40%, transparent 100%);
   }
 
   #glow-follower {
-    position: fixed;
+    position: absolute;
     width: 650px;
     height: 650px;
     border-radius: 50%;
@@ -86,7 +87,7 @@
 
   /* ── LAYOUT ── */
   .site-wrap { position: relative; z-index: 1; }
-  .container { max-width: 1200px; margin: 0; padding: 0 80px; }
+  .container { max-width: 1160px; margin: 0 auto; padding: 0 40px; }
   .divider { border: none; border-top: 1px solid var(--gray-faint); }
 
   /* ── NAV ── */
@@ -104,9 +105,9 @@
     align-items: center;
     justify-content: space-between;
     height: 64px;
-    max-width: 1200px;
-    margin: 0;
-    padding: 0 80px;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 40px;
   }
   .nav-logo {
     font-family: var(--font-head);
@@ -999,9 +1000,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 1200px;
-    margin: 0;
-    padding: 0 80px;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 40px;
   }
   .footer-copy {
     font-size: 12px;
@@ -1054,11 +1055,7 @@
       gap: 28px;
     }
     
-    .container, .nav-inner, .footer-inner {
-      padding: 0 24px;
-      margin: 0 auto;
-      max-width: 100%;
-    }
+    .container { padding: 0 24px; }
     .hero-cta { flex-direction: column; align-items: stretch; }
     .btn-primary { justify-content: center; }
     .btn-ghost { justify-content: center; margin-top: 10px; }
@@ -1674,8 +1671,14 @@
   let active = false;
   
   window.addEventListener('mousemove', (e) => {
-    targetX = e.clientX;
-    targetY = e.clientY;
+    // Hide glow past the hero header fold
+    if (e.pageY > window.innerHeight) {
+      glow.style.opacity = '0';
+      active = false;
+      return;
+    }
+    targetX = e.pageX;
+    targetY = e.pageY;
     if (!active) {
       glow.style.opacity = '1';
       active = true;
