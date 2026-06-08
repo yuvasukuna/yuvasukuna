@@ -1234,7 +1234,7 @@
       <!-- Featured Project: AI Content Studio -->
       <div class="project-card">
         <div class="video-wrapper">
-          <video src="AI CONTENT STUDIO/AI CONTENT STUDIO.mp4" loop muted playsinline></video>
+          <video data-src="AI CONTENT STUDIO/AI CONTENT STUDIO.mp4" preload="none" loop muted playsinline></video>
         </div>
         
         <div class="project-meta">
@@ -1270,7 +1270,7 @@
         <!-- Revolt Final -->
         <div class="grid-project-card scroll-reveal" data-reveal-dir="up">
           <div class="video-wrapper">
-            <video src="PORTFOLIO/REVOLT_FINAL.mp4" loop muted playsinline></video>
+            <video data-src="PORTFOLIO/REVOLT_FINAL.mp4" preload="none" loop muted playsinline></video>
           </div>
           <div class="project-info-box">
             <h3>SaaS Explainer · Revolt</h3>
@@ -1285,7 +1285,7 @@
         <!-- FlowIQ Final -->
         <div class="grid-project-card scroll-reveal" data-reveal-dir="up">
           <div class="video-wrapper">
-            <video src="PORTFOLIO/YUVASUKUNA(FLOWIQ)FINAL.mp4" loop muted playsinline></video>
+            <video data-src="PORTFOLIO/YUVASUKUNA(FLOWIQ)FINAL.mp4" preload="none" loop muted playsinline></video>
           </div>
           <div class="project-info-box">
             <h3>SaaS Explainer · FlowIQ</h3>
@@ -1300,7 +1300,7 @@
         <!-- Showreel/Op -->
         <div class="grid-project-card scroll-reveal" data-reveal-dir="up">
           <div class="video-wrapper">
-            <video src="PORTFOLIO/op.mp4" loop muted playsinline></video>
+            <video data-src="PORTFOLIO/op.mp4" preload="none" loop muted playsinline></video>
           </div>
           <div class="project-info-box">
             <h3>Featured Motion Sequence</h3>
@@ -1315,7 +1315,7 @@
         <!-- Concept 08 -->
         <div class="grid-project-card scroll-reveal" data-reveal-dir="up">
           <div class="video-wrapper">
-            <video src="PORTFOLIO/USER340129{08}.mp4" loop muted playsinline></video>
+            <video data-src="PORTFOLIO/USER340129{08}.mp4" preload="none" loop muted playsinline></video>
           </div>
           <div class="project-info-box">
             <h3>UI Concept Work · 08</h3>
@@ -1330,7 +1330,7 @@
         <!-- Concept 09 -->
         <div class="grid-project-card scroll-reveal" data-reveal-dir="up">
           <div class="video-wrapper">
-            <video src="PORTFOLIO/USER340129{09}.mp4" loop muted playsinline></video>
+            <video data-src="PORTFOLIO/USER340129{09}.mp4" preload="none" loop muted playsinline></video>
           </div>
           <div class="project-info-box">
             <h3>UI Concept Work · 09</h3>
@@ -1551,12 +1551,21 @@
 
       videos.forEach(video => {
         if (video === closestVideo) {
+          if (!video.src && video.dataset.src) {
+            video.src = video.dataset.src;
+            video.load();
+          }
           if (video.paused && !video.classList.contains('user-activated')) {
             video.play().catch(err => {});
           }
         } else {
           if (!video.paused && !video.classList.contains('user-activated')) {
             video.pause();
+          }
+          // Unload non-active video on mobile to save memory
+          if (window.innerWidth < 768 && video.src) {
+            video.removeAttribute('src');
+            video.load();
           }
         }
       });
@@ -1922,23 +1931,33 @@
       }
     });
 
-    // IntersectionObserver Video Auto-play / Pause logic on Viewport visibility
+    // IntersectionObserver Video Auto-play / Pause / Lazy Loading logic
     const videoObserverOptions = {
       root: null,
-      rootMargin: '0px',
-      threshold: 0.15
+      rootMargin: '300px 0px 300px 0px', // Lazy load videos 300px before they enter viewport
+      threshold: 0.0
     };
 
     const videoObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const video = entry.target;
         if (entry.isIntersecting) {
+          // Dynamically load the video source when entering viewport
+          if (!video.src && video.dataset.src) {
+            video.src = video.dataset.src;
+            video.load();
+          }
           if (video.paused && !video.classList.contains('user-activated')) {
             video.play().catch(err => {});
           }
         } else {
           if (!video.paused && !video.classList.contains('user-activated')) {
             video.pause();
+          }
+          // Unload the video source completely on mobile when it leaves the viewport to free up decoders and RAM
+          if (window.innerWidth < 768 && video.src) {
+            video.removeAttribute('src');
+            video.load();
           }
         }
       });
@@ -1956,6 +1975,11 @@
         if (!video.classList.contains('user-activated')) {
           video.classList.add('user-activated');
           video.setAttribute('controls', 'true');
+          // If the video hasn't loaded its source yet, load it
+          if (!video.src && video.dataset.src) {
+            video.src = video.dataset.src;
+            video.load();
+          }
           video.muted = false;
           video.play().catch(err => {});
         }
