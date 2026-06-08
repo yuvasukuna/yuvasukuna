@@ -840,6 +840,14 @@
     /* COMPREHENSIVE HIGH-END MOBILE RESPONSIVE MEDIA QUERIES
     /* ---------------------------------------------------- */
     @media (max-width: 768px) {
+      /* Disable scroll reveal animations on mobile to prevent layout shifts and blank screens on fast scroll */
+      .scroll-reveal, .scroll-reveal-blur, .project-card, .grid-project-card {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+        filter: none !important;
+      }
+
       .project-card, .grid-project-card, .cta-container {
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
@@ -1454,8 +1462,9 @@
 
     function resize() {
       const wrap = canvas.parentElement;
-      W = canvas.width = wrap.offsetWidth;
-      H = canvas.height = wrap.offsetHeight;
+      const scale = window.innerWidth < 768 ? 0.5 : 1.0;
+      W = canvas.width = Math.floor(wrap.offsetWidth * scale);
+      H = canvas.height = Math.floor(wrap.offsetHeight * scale);
     }
     resize();
     
@@ -1478,8 +1487,10 @@
     // Track scroll position & velocity
     let scrollStopTimeout;
     let lastActiveSection = '';
+    let isScrolling = false;
     window.addEventListener('scroll', () => {
       scrollY = window.scrollY;
+      isScrolling = true;
 
       const currentTime = Date.now();
       const dt = currentTime - lastScrollTime;
@@ -1510,12 +1521,13 @@
       }
 
       // Auto-play video closest to viewport center when scrolling stops on mobile
-      if (window.innerWidth < 768) {
-        clearTimeout(scrollStopTimeout);
-        scrollStopTimeout = setTimeout(() => {
+      clearTimeout(scrollStopTimeout);
+      scrollStopTimeout = setTimeout(() => {
+        isScrolling = false;
+        if (window.innerWidth < 768) {
           playCenteredVideo();
-        }, 150);
-      }
+        }
+      }, 150);
     });
 
     function playCenteredVideo() {
@@ -2003,6 +2015,12 @@
 
     // Animation Loop
     function loop(ts) {
+      // On mobile, skip canvas clearing and drawing during active scroll to maximize scroll performance
+      if (window.innerWidth < 768 && isScrolling) {
+        requestAnimationFrame(loop);
+        return;
+      }
+
       ctx.clearRect(0, 0, W, H);
       
       drawConnections();
