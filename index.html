@@ -1551,9 +1551,9 @@
 
       videos.forEach(video => {
         if (video === closestVideo) {
+          // Lazy-load source dynamically when it becomes the active centered video
           if (!video.src && video.dataset.src) {
             video.src = video.dataset.src;
-            video.load();
           }
           if (video.paused && !video.classList.contains('user-activated')) {
             video.play().catch(err => {});
@@ -1561,11 +1561,6 @@
         } else {
           if (!video.paused && !video.classList.contains('user-activated')) {
             video.pause();
-          }
-          // Unload non-active video on mobile to save memory
-          if (window.innerWidth < 768 && video.src) {
-            video.removeAttribute('src');
-            video.load();
           }
         }
       });
@@ -1945,7 +1940,6 @@
           // Dynamically load the video source when entering viewport
           if (!video.src && video.dataset.src) {
             video.src = video.dataset.src;
-            video.load();
           }
           if (video.paused && !video.classList.contains('user-activated')) {
             video.play().catch(err => {});
@@ -1953,11 +1947,6 @@
         } else {
           if (!video.paused && !video.classList.contains('user-activated')) {
             video.pause();
-          }
-          // Unload the video source completely on mobile when it leaves the viewport to free up decoders and RAM
-          if (window.innerWidth < 768 && video.src) {
-            video.removeAttribute('src');
-            video.load();
           }
         }
       });
@@ -1978,7 +1967,6 @@
           // If the video hasn't loaded its source yet, load it
           if (!video.src && video.dataset.src) {
             video.src = video.dataset.src;
-            video.load();
           }
           video.muted = false;
           video.play().catch(err => {});
