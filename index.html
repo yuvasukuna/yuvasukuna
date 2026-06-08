@@ -64,18 +64,18 @@
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-    background-size: 24px 24px;
-    mask-image: radial-gradient(circle 65% at 50% 50%, #000 35%, transparent 100%);
-    -webkit-mask-image: radial-gradient(circle 65% at 50% 50%, #000 35%, transparent 100%);
+    background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(circle 85% at 35% 50%, #000 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle 85% at 35% 50%, #000 40%, transparent 100%);
   }
 
   #glow-follower {
     position: fixed;
-    width: 500px;
-    height: 500px;
+    width: 650px;
+    height: 650px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, rgba(168, 85, 247, 0) 70%);
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.16) 0%, rgba(139, 92, 246, 0.06) 40%, rgba(168, 85, 247, 0) 70%);
     pointer-events: none;
     z-index: 0;
     transform: translate(-50%, -50%);
@@ -86,7 +86,7 @@
 
   /* ── LAYOUT ── */
   .site-wrap { position: relative; z-index: 1; }
-  .container { max-width: 1160px; margin: 0 auto; padding: 0 40px; }
+  .container { max-width: 1200px; margin: 0; padding: 0 80px; }
   .divider { border: none; border-top: 1px solid var(--gray-faint); }
 
   /* ── NAV ── */
@@ -104,9 +104,9 @@
     align-items: center;
     justify-content: space-between;
     height: 64px;
-    max-width: 1160px;
-    margin: 0 auto;
-    padding: 0 40px;
+    max-width: 1200px;
+    margin: 0;
+    padding: 0 80px;
   }
   .nav-logo {
     font-family: var(--font-head);
@@ -999,9 +999,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 1160px;
-    margin: 0 auto;
-    padding: 0 40px;
+    max-width: 1200px;
+    margin: 0;
+    padding: 0 80px;
   }
   .footer-copy {
     font-size: 12px;
@@ -1054,7 +1054,11 @@
       gap: 28px;
     }
     
-    .container { padding: 0 24px; }
+    .container, .nav-inner, .footer-inner {
+      padding: 0 24px;
+      margin: 0 auto;
+      max-width: 100%;
+    }
     .hero-cta { flex-direction: column; align-items: stretch; }
     .btn-primary { justify-content: center; }
     .btn-ghost { justify-content: center; margin-top: 10px; }
