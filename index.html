@@ -69,7 +69,7 @@
       pointer-events: auto; /* Enable mouse interactions */
     }
 
-    /* Radial blur ambient orbs reacting to scroll */
+    /* Radial blur ambient orbs */
     .orb {
       position: absolute;
       border-radius: 50%;
@@ -77,7 +77,7 @@
       filter: blur(100px);
       opacity: 0.22;
       mix-blend-mode: screen;
-      transition: transform 0.1s cubic-bezier(0.1, 0.8, 0.2, 1);
+      will-change: auto;
     }
 
     .orb1 {
@@ -86,7 +86,6 @@
       background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
       top: -150px;
       left: -150px;
-      transform: translateY(calc(var(--scroll) * -0.12px));
     }
 
     .orb2 {
@@ -95,7 +94,6 @@
       background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);
       top: 35%;
       right: -180px;
-      transform: translateY(calc(var(--scroll) * -0.2px));
     }
 
     .orb3 {
@@ -104,7 +102,6 @@
       background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
       bottom: -100px;
       left: 20%;
-      transform: translateY(calc(var(--scroll) * -0.08px));
     }
 
     /* Navigation */
@@ -843,6 +840,12 @@
     /* COMPREHENSIVE HIGH-END MOBILE RESPONSIVE MEDIA QUERIES
     /* ---------------------------------------------------- */
     @media (max-width: 768px) {
+      .project-card, .grid-project-card, .cta-container {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background: rgba(12, 12, 26, 0.94) !important;
+      }
+
       .container {
         padding: 0 16px;
       }
@@ -1474,9 +1477,9 @@
 
     // Track scroll position & velocity
     let scrollStopTimeout;
+    let lastActiveSection = '';
     window.addEventListener('scroll', () => {
       scrollY = window.scrollY;
-      document.documentElement.style.setProperty('--scroll', scrollY);
 
       const currentTime = Date.now();
       const dt = currentTime - lastScrollTime;
@@ -1494,12 +1497,17 @@
           current = id;
         }
       });
-      document.querySelectorAll('nav a').forEach(a => {
-        a.classList.remove('active');
-        if (a.getAttribute('href') === `#${current}`) {
-          a.classList.add('active');
-        }
-      });
+      
+      // Only perform DOM mutations when the active section changes
+      if (current !== lastActiveSection) {
+        lastActiveSection = current;
+        document.querySelectorAll('nav a').forEach(a => {
+          a.classList.remove('active');
+          if (a.getAttribute('href') === `#${current}`) {
+            a.classList.add('active');
+          }
+        });
+      }
 
       // Auto-play video closest to viewport center when scrolling stops on mobile
       if (window.innerWidth < 768) {
