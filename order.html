@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Package - yuvasukuna.</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Core variable definitions matching index.html theme */
+    :root {
+      --bg: #030308;
+      --card-bg: rgba(255, 255, 255, 0.02);
+      --border-color: rgba(255, 255, 255, 0.05);
+      --text-main: #ffffff;
+      --text-muted: #9ca3af;
+      --primary: #7c3aed;
+      --secondary: #ec4899;
+      --accent: #06b6d4;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Fixed space particle background wrapper */
+    .space-wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      background: radial-gradient(circle at 50% 50%, #080816 0%, #020205 100%);
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .bg-guide-grid {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: radial-gradient(circle 50% at 50% 50%, #000 40%, transparent 100%);
+      -webkit-mask-image: radial-gradient(circle 50% at 50% 50%, #000 40%, transparent 100%);
+    }
+
+    canvas {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 120px 24px 80px 24px;
+    }
+
+    /* Navigation header bar */
+    header {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 48px);
+      max-width: 1240px;
+      padding: 14px 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      background: rgba(8, 8, 16, 0.45);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .brand-nav {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+      text-decoration: none;
+      transition: opacity 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-left: 28px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: var(--text-main);
+    }
+
+    /* Header title */
+    .order-title-container {
+      text-align: center;
+      margin-bottom: 60px;
+      margin-top: 40px;
+    }
+
+    .order-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(32px, 6vw, 54px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      margin-bottom: 12px;
+      background: linear-gradient(to right, #ffffff, #a78bfa, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .order-subtitle {
+      font-size: clamp(14px, 2vw, 17px);
+      color: var(--text-muted);
+      max-width: 550px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* Pricing section layout */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-bottom: 80px;
+      width: 100%;
+    }
+
+    .pricing-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 40px 32px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: border-color 0.4s ease, 
+                  background-color 0.4s ease, 
+                  box-shadow 0.4s ease, 
+                  transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                  opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .pricing-card.reveal-active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Regular package - Cyan */
+    .pricing-card.regular {
+      border-color: rgba(6, 182, 212, 0.25);
+      background: rgba(6, 182, 212, 0.015);
+    }
+    .pricing-card.regular:hover {
+      border-color: rgba(6, 182, 212, 0.55);
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 20px 45px rgba(6, 182, 212, 0.1);
+    }
+    .pricing-card.regular .plan-badge {
+      background: rgba(6, 182, 212, 0.12);
+      border-color: rgba(6, 182, 212, 0.25);
+      color: var(--accent);
+    }
+    .pricing-card.regular .plan-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+    }
+
+    /* Standard package - Violet */
+    .pricing-card.standard {
+      border-color: rgba(124, 58, 237, 0.25);
+      background: rgba(124, 58, 237, 0.015);
+    }
+    .pricing-card.standard:hover {
+      border-color: rgba(124, 58, 237, 0.55);
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 20px 45px rgba(124, 58, 237, 0.1);
+    }
+    .pricing-card.standard .plan-badge {
+      background: rgba(124, 58, 237, 0.12);
+      border-color: rgba(124, 58, 237, 0.25);
+      color: var(--primary);
+    }
+    .pricing-card.standard .plan-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+    }
+
+    /* Premium package - Pink */
+    .pricing-card.premium {
+      border-color: rgba(236, 72, 153, 0.25);
+      background: rgba(236, 72, 153, 0.015);
+    }
+    .pricing-card.premium:hover {
+      border-color: rgba(236, 72, 153, 0.55);
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 20px 45px rgba(236, 72, 153, 0.1);
+    }
+    .pricing-card.premium .plan-badge {
+      background: rgba(236, 72, 153, 0.12);
+      border-color: rgba(236, 72, 153, 0.25);
+      color: var(--secondary);
+    }
+    .pricing-card.premium .plan-btn:hover {
+      background: var(--secondary);
+      border-color: var(--secondary);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+    }
+
+    .pricing-card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-6px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+    }
+
+    .plan-badge {
+      display: inline-block;
+      align-self: flex-start;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 6px 12px;
+      border-radius: 100px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .plan-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    .plan-price {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 20px;
+    }
+
+    .plan-price span {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+
+    .plan-desc {
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      min-height: 60px;
+    }
+
+    .plan-features {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 36px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-grow: 1;
+    }
+
+    .plan-features li {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .plan-features li::before {
+      content: '✦';
+      color: var(--primary);
+      font-size: 11px;
+    }
+
+    .pricing-card.featured .plan-features li::before {
+      color: var(--secondary);
+    }
+
+    .plan-btn {
+      display: block;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .plan-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .plan-btn.featured-btn {
+      background: var(--primary);
+      border: none;
+    }
+
+    .plan-btn.featured-btn:hover {
+      background: #8b5cf6;
+      box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+    }
+
+    /* Custom Brief calculator */
+    .custom-brief-container {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: 28px;
+      padding: 48px;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: border-color 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
+                  box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                  opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .custom-brief-container.reveal-active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .custom-headline {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .custom-subline {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+      text-align: center;
+      max-width: 580px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.5;
+    }
+
+    .custom-form {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .input-group label {
+      font-size: 11px;
+      font-weight: 550;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+    }
+
+    .custom-form input[type="text"],
+    .custom-form input[type="email"],
+    .custom-form textarea {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 13.5px;
+      transition: all 0.3s ease;
+    }
+
+    .custom-form input[type="text"]:focus,
+    .custom-form input[type="email"]:focus,
+    .custom-form textarea:focus {
+      border-color: rgba(124, 58, 237, 0.4);
+      background: rgba(255, 255, 255, 0.03);
+      box-shadow: 0 0 15px rgba(124, 58, 237, 0.15);
+      outline: none;
+    }
+
+    /* Slider styling */
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #budget-value {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--secondary);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      outline: none;
+      margin: 12px 0 6px 0;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
+      transition: transform 0.1s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .submit-brief-btn {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--text-main);
+      border: none;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(124, 58, 237, 0.25);
+    }
+
+    .submit-brief-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+    }
+
+    .submit-brief-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Success confirmation card */
+    .brief-success-card {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px 0;
+      opacity: 0;
+      transform: scale(0.96);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .brief-success-card.active {
+      display: flex;
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .success-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #10b981;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+
+    .brief-success-card h4 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .brief-success-card p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      max-width: 420px;
+    }
+
+    /* Footer */
+    footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 80px;
+    }
+
+    @media (max-width: 768px) {
+      .pricing-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .pricing-card.featured {
+        transform: none;
+      }
+      .pricing-card.featured:hover {
+        transform: translateY(-6px);
+      }
+      .custom-brief-container {
+        padding: 24px;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      header {
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - 24px);
+        padding: 12px 16px;
+        border-radius: 14px;
+      }
+      nav a {
+        margin-left: 14px;
+        font-size: 11px;
+        letter-spacing: 0.1px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        justify-content: center;
+        padding: 10px 12px;
+      }
+      .brand-nav {
+        display: none;
+      }
+      nav a {
+        margin: 0 8px;
+        font-size: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Dynamic Space background -->
+  <div class="space-wrap">
+    <div class="bg-guide-grid"></div>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+    <canvas id="c"></canvas>
+  </div>
+
+  <!-- Navigation header -->
+  <header>
+    <a href="index.html" class="brand-nav">yuvasukuna<span style="color:var(--primary)">.</span></a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="index.html#work">Work</a>
+      <a href="index.html#about">About</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="order-title-container">
+      <h1 class="order-title">Select Your Package</h1>
+      <p class="order-subtitle">Handcrafted custom animation packages to explain your product, retain your viewers, and convert leads.</p>
+    </div>
+
+    <!-- Pricing Grid -->
+    <div class="pricing-grid">
+      <!-- Tier 1: Regular -->
+      <div class="pricing-card regular">
+        <div class="plan-badge">Regular</div>
+        <h3 class="plan-title">Logo & Details</h3>
+        <div class="plan-price">$300<span>/project</span></div>
+        <p class="plan-desc">For creators & startups needing high-end logo animations, details, and slick UI transitions.</p>
+        <ul class="plan-features">
+          <li>Up to 5 seconds animation</li>
+          <li>Custom Vector SVG Styling</li>
+          <li>3 Revision Rounds</li>
+          <li>Source File Included</li>
+        </ul>
+        <button class="plan-btn select-pkg-btn" data-package="Regular" data-price="300" data-color="#06b6d4">Select Regular</button>
+      </div>
+
+      <!-- Tier 2: Standard (Highlighted) -->
+      <div class="pricing-card standard">
+        <div class="plan-badge">Standard</div>
+        <h3 class="plan-title">SaaS Explainer</h3>
+        <div class="plan-price">$950<span>/project</span></div>
+        <p class="plan-desc">Complete handcrafted explainer video to capture attention, explain features, and convert visitors.</p>
+        <ul class="plan-features">
+          <li>Up to 60 seconds animation</li>
+          <li>Storyboard & Vector Asset Craft</li>
+          <li>Voiceover & Audio SFX Sync</li>
+          <li>Unlimited Revision Rounds</li>
+        </ul>
+        <button class="plan-btn select-pkg-btn" data-package="Standard" data-price="950" data-color="#7c3aed">Select Standard</button>
+      </div>
+
+      <!-- Tier 3: Premium -->
+      <div class="pricing-card premium">
+        <div class="plan-badge">Premium</div>
+        <h3 class="plan-title">Full Launch Suite</h3>
+        <div class="plan-price">$1,800<span>/project</span></div>
+        <p class="plan-desc">The ultimate launch assets. Complete custom storytelling, custom UI frames, and marketing ad formats.</p>
+        <ul class="plan-features">
+          <li>Up to 90 seconds explainer</li>
+          <li>Storytelling Scripting & Layout</li>
+          <li>Multi-channel formats (16:9 & 9:16)</li>
+          <li>Dedicated Priority Support</li>
+        </ul>
+        <button class="plan-btn select-pkg-btn" data-package="Premium" data-price="1800" data-color="#ec4899">Select Premium</button>
+      </div>
+    </div>
+
+    <!-- Custom Brief Calculator -->
+    <div class="custom-brief-container">
+      <h3 class="custom-headline">Didn't find what you need? Let's build a custom offer.</h3>
+      <p class="custom-subline">Tell me about your product and project goals. Set your target price, and let's craft the perfect assets.</p>
+      
+      <form id="custom-offer-form" class="custom-form">
+        <!-- Selected Package Indicator -->
+        <div class="input-group" id="selected-package-group" style="display: none; margin-bottom: 12px;">
+          <label>Selected Base Package</label>
+          <div id="selected-package-badge" class="plan-badge" style="margin-bottom: 0;">None</div>
+        </div>
+        <div class="form-row">
+          <div class="input-group">
+            <label for="client-name">Your Name</label>
+            <input type="text" id="client-name" name="name" required placeholder="John Doe">
+          </div>
+          <div class="input-group">
+            <label for="client-email">Your Email</label>
+            <input type="email" id="client-email" name="email" required placeholder="john@company.com">
+          </div>
+        </div>
+        
+        <div class="input-group">
+          <label for="project-brief">Project Requirements & Timeline</label>
+          <textarea id="project-brief" name="requirements" required rows="4" placeholder="Briefly describe what you're building, what motion assets you need, and when you need it by..."></textarea>
+        </div>
+
+        <div class="input-group">
+          <div class="slider-header">
+            <label>Custom Budget / Target Price</label>
+            <span id="budget-value">$800</span>
+          </div>
+          <input type="range" id="budget-slider" name="budget" min="200" max="3000" step="50" value="800">
+          <div class="slider-labels">
+            <span>$200</span>
+            <span>$1,500</span>
+            <span>$3,000+</span>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-brief-btn">Send Project Brief</button>
+      </form>
+      
+      <!-- Glass Success State -->
+      <div id="brief-success" class="brief-success-card">
+        <div class="success-icon">✓</div>
+        <h4>Project Brief Sent!</h4>
+        <p>Thank you. I've received your requirements and budget target. I will review it and email you custom options in 24 hours.</p>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2026 YuvaSukuna. All rights reserved. Legal & Licensing.</p>
+    </footer>
+  </div>
+
+  <script>
+    // Canvas setup
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    let scrollY = 0;
+
+    // Track scroll velocity
+    let lastScrollY = 0;
+    let lastScrollTime = Date.now();
+    let scrollVelocity = 0;
+
+    // Track interactions to sleep animations when idle (saves 100% CPU/GPU)
+    let lastInteractionTime = performance.now();
+    let loopRunning = true;
+
+    function recordInteraction() {
+      lastInteractionTime = performance.now();
+      if (!loopRunning) {
+        loopRunning = true;
+        requestAnimationFrame(loop);
+      }
+    }
+
+    function resize() {
+      const wrap = canvas.parentElement;
+      W = canvas.width = wrap.offsetWidth;
+      H = canvas.height = wrap.offsetHeight;
+    }
+    resize();
+    
+    // Width-only responsive resize listener (fixes mobile browser resize glitches on scroll)
+    let lastW = window.innerWidth;
+    window.addEventListener('resize', () => {
+      if (window.innerWidth !== lastW) {
+        lastW = window.innerWidth;
+        resize();
+        mouse.radius = window.innerWidth < 768 ? 60 : 120;
+      }
+    });
+
+    // Track scroll position & velocity
+    window.addEventListener('scroll', () => {
+      scrollY = window.scrollY;
+
+      const currentTime = Date.now();
+      const dt = currentTime - lastScrollTime;
+      if (dt > 0) {
+        scrollVelocity = Math.abs(scrollY - lastScrollY) / dt;
+      }
+      lastScrollY = scrollY;
+      lastScrollTime = currentTime;
+      recordInteraction();
+    }, { passive: true });
+
+    // Track mouse & mobile touch positions
+    const mouse = { x: null, y: null, radius: window.innerWidth < 768 ? 60 : 120 };
+    
+    function setMousePos(e) {
+      recordInteraction();
+      if (e.touches && e.touches.length > 0) {
+        mouse.x = e.touches[0].clientX;
+        mouse.y = e.touches[0].clientY;
+      } else {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      }
+    }
+    
+    function clearMousePos() {
+      recordInteraction();
+      mouse.x = null;
+      mouse.y = null;
+    }
+
+    window.addEventListener('mousemove', setMousePos);
+    window.addEventListener('mouseleave', clearMousePos);
+    window.addEventListener('touchstart', setMousePos, { passive: true });
+    window.addEventListener('touchmove', setMousePos, { passive: true });
+    window.addEventListener('touchend', clearMousePos);
+    window.addEventListener('touchcancel', clearMousePos);
+
+    // Pause animations immediately if tab is inactive/hidden to save 100% background power
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        loopRunning = false;
+      } else {
+        recordInteraction();
+      }
+    });
+
+    const PARTICLE_COUNT = window.innerWidth < 768 ? 25 : 80;
+    const particles = [];
+    const shootingStars = [];
+    const burstParticles = [];
+
+    class Particle {
+      constructor() {
+        this.init(true);
+      }
+      
+      init(randomY = false) {
+        this.x = Math.random() * W;
+        this.y = randomY ? Math.random() * H : -10;
+        
+        const type = Math.random();
+        if (type < 0.2) {
+          this.r = Math.random() * 6.5 + 4.5;
+          this.isBlur = true;
+          this.base = Math.random() * 0.18 + 0.05;
+        } else {
+          this.r = Math.random() * 3.2 + 1.2;
+          this.isBlur = false;
+          this.base = Math.random() * 0.45 + 0.15;
+        }
+        
+        this.vx = (Math.random() - 0.5) * 0.18;
+        this.vy = (Math.random() - 0.5) * 0.18;
+        
+        this.offsetX = 0;
+        this.offsetY = 0;
+
+        this.opacity = this.base;
+        this.twinkleSpeed = 0.003 + Math.random() * 0.008;
+        this.twinkleDir = Math.random() > 0.5 ? 1 : -1;
+        
+        const t = Math.random();
+        if (t < 0.4) this.hue = [124, 58, 237];
+        else if (t < 0.7) this.hue = [236, 72, 153];
+        else if (t < 0.85) this.hue = [6, 182, 212];
+        else this.hue = [255, 255, 255];
+
+        this.rx = this.x;
+        this.ry = this.y;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        this.opacity += this.twinkleSpeed * this.twinkleDir;
+        if (this.opacity > this.base + 0.25 || this.opacity < this.base - 0.12) {
+          this.twinkleDir *= -1;
+        }
+
+        const scrollFactor = this.r * 0.14; 
+        let ry = this.y - (scrollY * scrollFactor) + this.offsetY;
+        let rx = this.x + this.offsetX;
+
+        this.rx = ((rx % W) + W) % W;
+        this.ry = ((ry % H) + H) % H;
+
+        if (mouse.x !== null && mouse.y !== null) {
+          const dx = this.rx - mouse.x;
+          const dy = this.ry - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < mouse.radius) {
+            const force = (mouse.radius - dist) / mouse.radius;
+            const pushX = (dx / dist) * force * 2.0;
+            const pushY = (dy / dist) * force * 2.0;
+
+            this.offsetX += pushX;
+            this.offsetY += pushY;
+          }
+        }
+
+        this.offsetX *= 0.94;
+        this.offsetY *= 0.94;
+
+        if (this.x < -15) this.x = W + 15;
+        if (this.x > W + 15) this.x = -15;
+        if (this.y < -15) this.y = H + 15;
+        if (this.y > H + 15) this.y = -15;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.rx, this.ry, this.r, 0, Math.PI * 2);
+        
+        if (this.isBlur) {
+          const g = ctx.createRadialGradient(this.rx, this.ry, 0, this.rx, this.ry, this.r);
+          g.addColorStop(0, `rgba(${this.hue[0]},${this.hue[1]},${this.hue[2]},${Math.max(0.01, this.opacity)})`);
+          g.addColorStop(1, `rgba(${this.hue[0]},${this.hue[1]},${this.hue[2]},0)`);
+          ctx.fillStyle = g;
+        } else {
+          ctx.fillStyle = `rgba(${this.hue[0]},${this.hue[1]},${this.hue[2]},${Math.max(0.04, this.opacity)})`;
+        }
+        ctx.fill();
+      }
+    }
+
+    class ShootingStar {
+      constructor() { this.spawn(); }
+      spawn() {
+        this.x = Math.random() * W * 0.7;
+        this.y = Math.random() * H * 0.4;
+        const angle = (Math.PI / 6) + Math.random() * (Math.PI / 8);
+        const speed = 8 + Math.random() * 8;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.len = 70 + Math.random() * 90;
+        this.opacity = 1;
+        this.fade = 0.02 + Math.random() * 0.015;
+        this.width = 0.8 + Math.random() * 0.8;
+        
+        const t = Math.random();
+        this.color = t < 0.6 ? [255, 255, 255] : t < 0.8 ? [124, 58, 237] : [236, 72, 153];
+        this.active = true;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.opacity -= this.fade;
+        if (this.opacity <= 0) this.active = false;
+      }
+      draw() {
+        const tailX = this.x - this.vx * (this.len / 10);
+        const tailY = this.y - this.vy * (this.len / 10);
+        const grd = ctx.createLinearGradient(tailX, tailY, this.x, this.y);
+        grd.addColorStop(0, `rgba(${this.color[0]},${this.color[1]},${this.color[2]},0)`);
+        grd.addColorStop(0.6, `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${this.opacity * 0.3})`);
+        grd.addColorStop(1, `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${this.opacity})`);
+        
+        ctx.beginPath();
+        ctx.moveTo(tailX, tailY);
+        ctx.lineTo(this.x, this.y);
+        ctx.strokeStyle = grd;
+        ctx.lineWidth = this.width;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+      }
+    }
+
+    class BurstParticle {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2 + Math.random() * 8;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.r = Math.random() * 4 + 1.5;
+        this.opacity = 1.0;
+        this.fade = 0.015 + Math.random() * 0.02;
+        this.color = color;
+        this.active = true;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vx *= 0.95;
+        this.vy *= 0.95;
+        this.opacity -= this.fade;
+        if (this.opacity <= 0) this.active = false;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r * 1.8);
+        g.addColorStop(0, `rgba(${this.color[0]}, ${this.color[1]}, ${this.color[2]}, ${this.opacity})`);
+        g.addColorStop(0.4, `rgba(${this.color[0]}, ${this.color[1]}, ${this.color[2]}, ${this.opacity * 0.3})`);
+        g.addColorStop(1, `rgba(${this.color[0]}, ${this.color[1]}, ${this.color[2]}, 0)`);
+        ctx.fillStyle = g;
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push(new Particle());
+    }
+
+    let lastShoot = 0;
+    let nextDelay = 2000 + Math.random() * 3000;
+
+    function drawConnections() {
+      const threshold = 80;
+      const threshSq = threshold * threshold;
+      for (let i = 0; i < particles.length; i++) {
+        if (particles[i].isBlur) continue;
+        const p1 = particles[i];
+        
+        for (let j = i + 1; j < particles.length; j++) {
+          if (particles[j].isBlur) continue;
+          const p2 = particles[j];
+          const dx = p1.rx - p2.rx;
+          const dy = p1.ry - p2.ry;
+          const distSq = dx * dx + dy * dy;
+
+          if (distSq < threshSq) {
+            const d = Math.sqrt(distSq);
+            const alpha = (1 - d / threshold) * 0.05;
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(167, 139, 250, ${alpha})`;
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(p1.rx, p1.ry);
+            ctx.lineTo(p2.rx, p2.ry);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    const o1 = document.querySelector('.orb1');
+    const o2 = document.querySelector('.orb2');
+    const o3 = document.querySelector('.orb3');
+
+    function loop(ts) {
+      if (ts - lastInteractionTime > 8000) {
+        loopRunning = false;
+        return;
+      }
+
+      ctx.clearRect(0, 0, W, H);
+      if (o1) o1.style.transform = `translateY(${scrollY * -0.12}px)`;
+      if (o2) o2.style.transform = `translateY(${scrollY * -0.2}px)`;
+      if (o3) o3.style.transform = `translateY(${scrollY * -0.08}px)`;
+      drawConnections();
+      particles.forEach(p => { p.update(); p.draw(); });
+      scrollVelocity *= 0.95;
+      for (let i = burstParticles.length - 1; i >= 0; i--) {
+        burstParticles[i].update(); burstParticles[i].draw();
+        if (!burstParticles[i].active) burstParticles.splice(i, 1);
+      }
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        shootingStars[i].update(); shootingStars[i].draw();
+        if (!shootingStars[i].active) shootingStars.splice(i, 1);
+      }
+      if (ts - lastShoot > nextDelay) {
+        if (document.visibilityState === 'visible') shootingStars.push(new ShootingStar());
+        lastShoot = ts; nextDelay = 2500 + Math.random() * 3000;
+      }
+      requestAnimationFrame(loop);
+    }
+
+    // Selected Package Tracking Variable
+    let currentSelectedPackage = "Custom Offer";
+
+    // Select Package Morphing Handler
+    const selectBtns = document.querySelectorAll('.select-pkg-btn');
+    const briefContainer = document.querySelector('.custom-brief-container');
+    const pkgGroup = document.getElementById('selected-package-group');
+    const pkgBadge = document.getElementById('selected-package-badge');
+
+    // Custom Quote Budget Slider sync
+    const budgetSlider = document.getElementById('budget-slider');
+    const budgetValue = document.getElementById('budget-value');
+
+    selectBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const pkgName = btn.getAttribute('data-package');
+        const price = parseInt(btn.getAttribute('data-price'));
+        const color = btn.getAttribute('data-color');
+        
+        currentSelectedPackage = pkgName;
+
+        // 1. Update form badge details
+        if (pkgBadge && pkgGroup) {
+          pkgBadge.textContent = pkgName;
+          pkgBadge.style.color = color;
+          pkgBadge.style.borderColor = color + '40';
+          pkgBadge.style.background = color + '15';
+          pkgGroup.style.display = 'flex';
+        }
+
+        // 2. Adjust budget slider
+        if (budgetSlider && budgetValue) {
+          budgetSlider.value = price;
+          budgetValue.textContent = `$${price.toLocaleString()}`;
+        }
+
+        // 3. Morph border color and glow
+        if (briefContainer) {
+          briefContainer.style.borderColor = color + '80';
+          briefContainer.style.boxShadow = `0 20px 45px ${color}15`;
+        }
+
+        // 4. Smooth scroll to form
+        const formTarget = document.getElementById('custom-offer-form');
+        if (formTarget) {
+          formTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+    });
+
+    if (budgetSlider && budgetValue) {
+      budgetSlider.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value);
+        if (val >= 3000) {
+          budgetValue.textContent = '$3,000+';
+        } else {
+          budgetValue.textContent = `$${val.toLocaleString()}`;
+        }
+      });
+    }
+
+    // Custom Quote Form submit handler (Compiles dynamic mailto links)
+    const customForm = document.getElementById('custom-offer-form');
+    const successCard = document.getElementById('brief-success');
+    if (customForm && successCard) {
+      customForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const name = document.getElementById('client-name').value;
+        const email = document.getElementById('client-email').value;
+        const brief = document.getElementById('project-brief').value;
+        const budget = budgetSlider ? budgetSlider.value : 'Custom';
+
+        // Animate out form and animate in success message
+        customForm.style.opacity = '0';
+        customForm.style.transform = 'scale(0.96)';
+        
+        setTimeout(() => {
+          customForm.style.display = 'none';
+          successCard.style.display = 'flex';
+          setTimeout(() => {
+            successCard.classList.add('active');
+          }, 50);
+        }, 300);
+
+        const formspreeEndpoint = 'xaqgddaq'; // Put your Formspree Form ID here (e.g. 'xbjnqpyz')
+        
+        if (formspreeEndpoint) {
+          // Send form data to Formspree silently in the background
+          fetch(`https://formspree.io/f/${formspreeEndpoint}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              name: name,
+              email: email,
+              package: currentSelectedPackage,
+              budget: `$${budget}`,
+              requirements: brief
+            })
+          }).catch(err => {
+            console.warn("Silent send failed, falling back to mail client:", err);
+          });
+        } else {
+          // Fallback: Compile details into pre-formatted mail brief & send directly via mail client
+          const emailSubject = encodeURIComponent(`Project Brief: ${currentSelectedPackage} Plan - from ${name}`);
+          const emailBody = encodeURIComponent(
+            `Hi Yuva,\n\nI want to order a custom package.\n\n` +
+            `-------------------------------\n` +
+            `CLIENT DETAILS:\n` +
+            `- Name: ${name}\n` +
+            `- Email: ${email}\n` +
+            `- Package Selected: ${currentSelectedPackage}\n` +
+            `- Selected Budget Target: $${budget}\n\n` +
+            `PROJECT BRIEF & REQUIREMENTS:\n` +
+            `${brief}\n` +
+            `-------------------------------\n\n` +
+            `Looking forward to hearing from you!`
+          );
+
+          window.location.href = `mailto:yuvasukuna09@gmail.com?subject=${emailSubject}&body=${emailBody}`;
+        }
+      });
+    }
+
+    // Staggered Entrance Animation for Pricing Cards & Calculator Form
+    window.addEventListener('DOMContentLoaded', () => {
+      // Stagger pricing cards
+      const cards = document.querySelectorAll('.pricing-card');
+      cards.forEach((card, idx) => {
+        setTimeout(() => {
+          card.classList.add('reveal-active');
+        }, 150 + idx * 150);
+      });
+
+      // Slide in the form at the very end
+      setTimeout(() => {
+        const briefWrap = document.querySelector('.custom-brief-container');
+        if (briefWrap) {
+          briefWrap.classList.add('reveal-active');
+        }
+      }, 150 + cards.length * 150);
+    });
+
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
