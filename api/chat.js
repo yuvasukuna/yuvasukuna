@@ -79,7 +79,7 @@ Your main goals:
       console.error('Failed to list models:', e);
     }
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent`, {
       method: 'POST',
       headers,
       body: JSON.stringify({
