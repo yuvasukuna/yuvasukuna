@@ -209,22 +209,67 @@
       margin-bottom: 20px;
       color: var(--text-main);
       position: relative;
+      display: inline-flex;
+      justify-content: center;
     }
 
     .brand-title span {
-      background: linear-gradient(to right, #ffffff, #a78bfa, #ec4899, #a78bfa, #ffffff);
-      background-size: 200% auto;
+      display: inline-block;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: headingShine 6s linear infinite;
+      opacity: 0;
+      filter: blur(12px);
+      transform: translateY(10px) scale(0.9);
+      animation: letterReveal 7s cubic-bezier(0.16, 1, 0.3, 1) infinite;
     }
 
-    @keyframes headingShine {
+    /* Color split for Yuva (1-4) and Sukuna (5-10) */
+    .brand-title span:nth-child(-n+4) {
+      background: linear-gradient(to right, #ffffff, #c4b5fd);
+      -webkit-background-clip: text;
+    }
+    .brand-title span:nth-child(n+5) {
+      background: linear-gradient(to right, #a78bfa, #ec4899);
+      -webkit-background-clip: text;
+    }
+
+    /* Staggered Delays for Y-u-v-a-S-u-k-u-n-a */
+    .brand-title span:nth-child(1)  { animation-delay: 0.0s; }
+    .brand-title span:nth-child(2)  { animation-delay: 0.08s; }
+    .brand-title span:nth-child(3)  { animation-delay: 0.16s; }
+    .brand-title span:nth-child(4)  { animation-delay: 0.24s; }
+    .brand-title span:nth-child(5)  { animation-delay: 0.32s; }
+    .brand-title span:nth-child(6)  { animation-delay: 0.40s; }
+    .brand-title span:nth-child(7)  { animation-delay: 0.48s; }
+    .brand-title span:nth-child(8)  { animation-delay: 0.56s; }
+    .brand-title span:nth-child(9)  { animation-delay: 0.64s; }
+    .brand-title span:nth-child(10) { animation-delay: 0.72s; }
+
+    @keyframes letterReveal {
       0% {
-        background-position: 0% center;
+        opacity: 0;
+        filter: blur(12px);
+        transform: translateY(15px) scale(0.85);
+      }
+      15% {
+        opacity: 1;
+        filter: blur(0px);
+        transform: translateY(0) scale(1);
+      }
+      80% {
+        opacity: 1;
+        filter: blur(0px);
+        transform: translateY(0) scale(1);
+      }
+      84% {
+        opacity: 0;
+        filter: blur(12px);
+        transform: translateY(-15px) scale(0.85);
       }
       100% {
-        background-position: 200% center;
+        opacity: 0;
+        filter: blur(12px);
+        transform: translateY(-15px) scale(0.85);
       }
     }
 
@@ -1186,7 +1231,7 @@
     <section id="hero">
       <div class="hero-center">
         <!-- Big Brand Title strictly centered -->
-        <div class="brand-title"><span>YuvaSukuna</span></div>
+        <div class="brand-title"><span>Y</span><span>u</span><span>v</span><span>a</span><span>S</span><span>u</span><span>k</span><span>u</span><span>n</span><span>a</span></div>
         <h1 class="headline">I create demos that sell.</h1>
         <p class="subline">Motion design for SaaS founders who want their product to speak for itself.</p>
         
