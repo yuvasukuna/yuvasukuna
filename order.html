@@ -587,35 +587,88 @@
     }
 
     @media (max-width: 768px) {
+      .container {
+        padding-top: 140px;
+        padding-left: 16px;
+        padding-right: 16px;
+      }
       .pricing-grid {
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 24px;
       }
-      .pricing-card.featured {
-        transform: none;
+      .pricing-card {
+        padding: 32px 24px;
       }
-      .pricing-card.featured:hover {
-        transform: translateY(-6px);
+      .pricing-card.regular:hover,
+      .pricing-card.standard:hover,
+      .pricing-card.premium:hover {
+        transform: translateY(-4px) scale(1.01);
+      }
+      /* Solid modern colored buttons by default on mobile for clear tier separation */
+      .pricing-card.regular .plan-btn {
+        background: rgba(6, 182, 212, 0.1);
+        border-color: rgba(6, 182, 212, 0.3);
+        color: var(--accent);
+      }
+      .pricing-card.standard .plan-btn {
+        background: rgba(124, 58, 237, 0.15);
+        border-color: rgba(124, 58, 237, 0.4);
+        color: var(--primary);
+      }
+      .pricing-card.premium .plan-btn {
+        background: rgba(236, 72, 153, 0.15);
+        border-color: rgba(236, 72, 153, 0.3);
+        color: var(--secondary);
       }
       .custom-brief-container {
-        padding: 24px;
+        padding: 28px 20px;
+        border-radius: 20px;
+      }
+      .custom-headline {
+        font-size: 19px;
+      }
+      .custom-subline {
+        font-size: 12.5px;
+        margin-bottom: 28px;
+      }
+      .custom-form {
+        gap: 18px;
       }
       .form-row {
         grid-template-columns: 1fr;
-        gap: 16px;
+        gap: 18px;
+      }
+      .input-group label {
+        font-size: 10px;
+        letter-spacing: 1px;
+      }
+      .custom-form input[type="text"],
+      .custom-form input[type="email"],
+      .custom-form textarea {
+        background: rgba(255, 255, 255, 0.03) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 12px;
+        font-size: 13.5px;
+        padding: 14px;
+      }
+      .custom-form input[type="text"]:focus,
+      .custom-form input[type="email"]:focus,
+      .custom-form textarea:focus {
+        border-color: rgba(124, 58, 237, 0.6) !important;
+        box-shadow: 0 0 12px rgba(124, 58, 237, 0.25) !important;
       }
       header {
-        top: 12px;
+        top: 16px;
         left: 50%;
         transform: translateX(-50%);
-        width: calc(100% - 24px);
-        padding: 12px 16px;
-        border-radius: 14px;
+        width: 90%;
+        padding: 12px 20px;
+        border-radius: 100px;
       }
       nav a {
-        margin-left: 14px;
-        font-size: 11px;
-        letter-spacing: 0.1px;
+        margin: 0 10px;
+        font-size: 10.5px;
+        letter-spacing: 0.5px;
       }
     }
 
@@ -1114,6 +1167,31 @@
     const budgetSlider = document.getElementById('budget-slider');
     const budgetValue = document.getElementById('budget-value');
 
+    // Dynamic budget slider fill track gradient function
+    function updateSliderBackground() {
+      if (!budgetSlider) return;
+      const min = parseInt(budgetSlider.min) || 200;
+      const max = parseInt(budgetSlider.max) || 3000;
+      const val = parseInt(budgetSlider.value) || 800;
+      const percent = ((val - min) / (max - min)) * 100;
+      
+      // Determine colors based on selected package (Cyan, Violet, Pink)
+      let color1 = 'var(--primary)';
+      let color2 = 'var(--secondary)';
+      if (currentSelectedPackage === 'Regular') {
+        color1 = '#06b6d4';
+        color2 = '#0891b2';
+      } else if (currentSelectedPackage === 'Premium') {
+        color1 = '#ec4899';
+        color2 = '#db2777';
+      }
+      
+      budgetSlider.style.background = `linear-gradient(to right, ${color1} 0%, ${color2} ${percent}%, rgba(255,255,255,0.05) ${percent}%)`;
+    }
+
+    // Initialize track fill on load
+    updateSliderBackground();
+
     selectBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const pkgName = btn.getAttribute('data-package');
@@ -1135,12 +1213,13 @@
         if (budgetSlider && budgetValue) {
           budgetSlider.value = price;
           budgetValue.textContent = `$${price.toLocaleString()}`;
+          updateSliderBackground();
         }
 
-        // 3. Morph border color and glow
+        // 3. Morph border color and glow (preventing heavy layout repaints)
         if (briefContainer) {
           briefContainer.style.borderColor = color + '80';
-          briefContainer.style.boxShadow = `0 20px 45px ${color}15`;
+          briefContainer.style.boxShadow = `0 15px 35px ${color}10`;
         }
 
         // 4. Smooth scroll to form
@@ -1159,6 +1238,7 @@
         } else {
           budgetValue.textContent = `$${val.toLocaleString()}`;
         }
+        updateSliderBackground();
       });
     }
 
