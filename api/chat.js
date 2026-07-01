@@ -64,6 +64,22 @@ Your main goals:
 
     // Use standard query key for AIzaSy keys, and Authorization header for AQ. keys
     const isStandardKey = apiKey.startsWith('AIzaSy');
+
+    // Diagnostic log: List available models to Vercel console
+    try {
+      const listUrl = isStandardKey 
+        ? `https://generativelanguage.googleapis.com/v1/models?key=${apiKey}`
+        : `https://generativelanguage.googleapis.com/v1/models`;
+      const listHeaders = {};
+      if (!isStandardKey) {
+        listHeaders['Authorization'] = `Bearer ${apiKey}`;
+      }
+      const modelsResponse = await fetch(listUrl, { headers: listHeaders });
+      const modelsData = await modelsResponse.json();
+      console.log('Available Models for this API Key:', JSON.stringify(modelsData));
+    } catch (e) {
+      console.error('Failed to list models:', e);
+    }
     const url = isStandardKey 
       ? `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`
       : `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent`;
