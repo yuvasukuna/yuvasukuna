@@ -36,11 +36,25 @@ Your main goals:
 6. Be brief, keeping answers under 3 sentences unless asked for details, so they are readable in a small mobile chat widget. Never make up details or pricing.`;
 
   try {
-    // Map conversation history to Gemini API format
-    const formattedHistory = (history || []).map(item => ({
+    // Format conversation history with system instructions at the very beginning
+    const formattedHistory = [];
+    
+    // Add the system prompt as the first message
+    formattedHistory.push({
+      role: 'user',
+      parts: [{ text: `System Instructions:\n${systemPrompt}` }]
+    });
+    // Add a mock model acknowledgement to keep role alternating
+    formattedHistory.push({
+      role: 'model',
+      parts: [{ text: "Understood. I am Yuva's Assistant. I will help the user according to these instructions." }]
+    });
+
+    // Append the actual history
+    (history || []).map(item => ({
       role: item.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: item.text }]
-    }));
+    })).forEach(item => formattedHistory.push(item));
 
     // Append the current message
     formattedHistory.push({
@@ -54,9 +68,6 @@ Your main goals:
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        systemInstruction: {
-          parts: [{ text: systemPrompt }]
-        },
         contents: formattedHistory,
         generationConfig: {
           temperature: 0.7,
