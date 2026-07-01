@@ -212,9 +212,20 @@
     }
 
     .brand-title span {
-      background: linear-gradient(to right, #ffffff, #a78bfa, #ec4899);
+      background: linear-gradient(to right, #ffffff, #a78bfa, #ec4899, #a78bfa, #ffffff);
+      background-size: 200% auto;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      animation: headingShine 6s linear infinite;
+    }
+
+    @keyframes headingShine {
+      0% {
+        background-position: 0% center;
+      }
+      100% {
+        background-position: 200% center;
+      }
     }
 
     .headline {
