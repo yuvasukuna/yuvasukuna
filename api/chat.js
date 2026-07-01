@@ -62,11 +62,22 @@ Your main goals:
       parts: [{ text: message }]
     });
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+    // Use standard query key for AIzaSy keys, and Authorization header for AQ. keys
+    const isStandardKey = apiKey.startsWith('AIzaSy');
+    const url = isStandardKey 
+      ? `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`
+      : `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent`;
+
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    if (!isStandardKey) {
+      headers['Authorization'] = `Bearer ${apiKey}`;
+    }
+
+    const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers,
       body: JSON.stringify({
         contents: formattedHistory,
         generationConfig: {
