@@ -218,58 +218,44 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       opacity: 0;
-      filter: blur(12px);
-      transform: translateY(10px) scale(0.9);
-      animation: letterReveal 7s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+      filter: blur(8px);
+      background-image: linear-gradient(to right, #ffffff, #a78bfa, #ec4899);
+      background-size: 1000% 100%;
+      animation: letterReveal 7s ease-in-out infinite;
     }
 
-    /* Color split for Yuva (1-4) and Sukuna (5-10) */
-    .brand-title span:nth-child(-n+4) {
-      background: linear-gradient(to right, #ffffff, #c4b5fd);
-      -webkit-background-clip: text;
-    }
-    .brand-title span:nth-child(n+5) {
-      background: linear-gradient(to right, #a78bfa, #ec4899);
-      -webkit-background-clip: text;
-    }
-
-    /* Staggered Delays for Y-u-v-a-S-u-k-u-n-a */
-    .brand-title span:nth-child(1)  { animation-delay: 0.0s; }
-    .brand-title span:nth-child(2)  { animation-delay: 0.08s; }
-    .brand-title span:nth-child(3)  { animation-delay: 0.16s; }
-    .brand-title span:nth-child(4)  { animation-delay: 0.24s; }
-    .brand-title span:nth-child(5)  { animation-delay: 0.32s; }
-    .brand-title span:nth-child(6)  { animation-delay: 0.40s; }
-    .brand-title span:nth-child(7)  { animation-delay: 0.48s; }
-    .brand-title span:nth-child(8)  { animation-delay: 0.56s; }
-    .brand-title span:nth-child(9)  { animation-delay: 0.64s; }
-    .brand-title span:nth-child(10) { animation-delay: 0.72s; }
+    /* Math-aligned offsets for a continuous word-wide gradient and staggered typing delays */
+    .brand-title span:nth-child(1)  { background-position: 0% center; animation-delay: 0.0s; }
+    .brand-title span:nth-child(2)  { background-position: 11.11% center; animation-delay: 0.12s; }
+    .brand-title span:nth-child(3)  { background-position: 22.22% center; animation-delay: 0.24s; }
+    .brand-title span:nth-child(4)  { background-position: 33.33% center; animation-delay: 0.36s; }
+    .brand-title span:nth-child(5)  { background-position: 44.44% center; animation-delay: 0.48s; }
+    .brand-title span:nth-child(6)  { background-position: 55.56% center; animation-delay: 0.60s; }
+    .brand-title span:nth-child(7)  { background-position: 66.67% center; animation-delay: 0.72s; }
+    .brand-title span:nth-child(8)  { background-position: 77.78% center; animation-delay: 0.84s; }
+    .brand-title span:nth-child(9)  { background-position: 88.89% center; animation-delay: 0.96s; }
+    .brand-title span:nth-child(10) { background-position: 100% center; animation-delay: 1.08s; }
 
     @keyframes letterReveal {
       0% {
         opacity: 0;
-        filter: blur(12px);
-        transform: translateY(15px) scale(0.85);
+        filter: blur(8px);
       }
-      15% {
+      4% {
         opacity: 1;
         filter: blur(0px);
-        transform: translateY(0) scale(1);
       }
       80% {
         opacity: 1;
         filter: blur(0px);
-        transform: translateY(0) scale(1);
       }
       84% {
         opacity: 0;
-        filter: blur(12px);
-        transform: translateY(-15px) scale(0.85);
+        filter: blur(8px);
       }
       100% {
         opacity: 0;
-        filter: blur(12px);
-        transform: translateY(-15px) scale(0.85);
+        filter: blur(8px);
       }
     }
 
