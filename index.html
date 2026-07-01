@@ -219,6 +219,7 @@
       -webkit-text-fill-color: transparent;
       opacity: 0;
       filter: blur(8px);
+      transform: translateY(25px) scale(0.8);
       background-image: linear-gradient(to right, #ffffff, #a78bfa, #ec4899);
       background-size: 1000% 100%;
       animation: letterReveal 7s ease-in-out infinite;
@@ -240,22 +241,33 @@
       0% {
         opacity: 0;
         filter: blur(8px);
+        transform: translateY(25px) scale(0.8);
       }
       4% {
         opacity: 1;
         filter: blur(0px);
+        transform: translateY(-8px) scale(1.1);
+      }
+      6% {
+        transform: translateY(3px) scale(0.97);
+      }
+      8% {
+        transform: translateY(0) scale(1);
       }
       80% {
         opacity: 1;
         filter: blur(0px);
+        transform: translateY(0) scale(1);
       }
       84% {
         opacity: 0;
         filter: blur(8px);
+        transform: translateY(-15px) scale(0.9);
       }
       100% {
         opacity: 0;
         filter: blur(8px);
+        transform: translateY(-15px) scale(0.9);
       }
     }
 
